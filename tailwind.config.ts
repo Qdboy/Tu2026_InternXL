@@ -72,6 +72,7 @@ export default {
         olive: "hsl(var(--olive))",
         charcoal: "hsl(var(--charcoal))",
         "dark-char": "hsl(var(--dark-char))",
+        "dark-surface": "hsl(var(--dark-surface))",
         sage: {
           DEFAULT: "hsl(var(--sage))",
           light: "hsl(var(--sage-light))",

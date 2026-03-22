@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Sparkles } from "lucide-react";
 import CandidateAvatar from "@/components/CandidateAvatar";
 import LevelTag from "@/components/LevelTag";
-import { Candidate, Recommendation, partyStyles } from "./types";
+import { Candidate, Recommendation, getPartyStyle } from "./types";
 
 interface Props {
   office: Recommendation | null;
@@ -43,7 +43,7 @@ const OfficeDetailDialog = ({ office, open, onOpenChange, onSelectCandidate }: P
           </p>
           <div className="space-y-2">
             {office.candidates.map((c, i) => {
-              const styles = partyStyles[c.party] || partyStyles.Independent;
+              const styles = getPartyStyle(c.party);
               return (
                 <button
                   key={i}
@@ -55,9 +55,8 @@ const OfficeDetailDialog = ({ office, open, onOpenChange, onSelectCandidate }: P
                     <p className="font-display text-[14px] font-bold text-foreground truncate">{c.name}</p>
                     <p className="text-[11px] text-muted-foreground truncate">{c.position}</p>
                   </div>
-                  <div className="flex flex-col items-end gap-1 shrink-0">
+                  <div className="shrink-0">
                     <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold ${styles.badge}`}>{c.party}</span>
-                    <span className="text-[10px] font-bold text-muted-foreground">{c.relevance_score}%</span>
                   </div>
                 </button>
               );

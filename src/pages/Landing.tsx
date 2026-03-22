@@ -1,6 +1,21 @@
+import { toast } from "sonner";
 import politiULogo from "@/assets/PolitiULogo.png";
 
-export default function Landing({ onGetStarted }: { onGetStarted: () => void }) {
+export default function Landing({ onGetStarted, onRestore }: { onGetStarted: () => void; onRestore: () => void }) {
+  const handleAlreadyHaveAccount = () => {
+    const stored = localStorage.getItem("politiu_user_location");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.residential && parsed.profile) {
+          onRestore();
+          return;
+        }
+      } catch { /* ignore */ }
+    }
+    toast("No previous account found. Please set up a new profile.");
+  };
+
   return (
     <div className="flex flex-col h-screen max-w-lg mx-auto bg-dark-char relative overflow-hidden">
       <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
@@ -30,7 +45,7 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
           Politi-<span className="text-orange-light">U</span>
         </h1>
         <p className="text-[13px] text-on-dark/40 text-center mb-14 tracking-[2.5px] uppercase relative z-10">
-          Your Civic Companion
+          Politics Made For You
         </p>
 
         {/* Gradient rule */}
@@ -42,7 +57,10 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
         >
           Get Started
         </button>
-        <button className="w-full max-w-[360px] py-[18px] bg-transparent text-mint font-body text-[15px] font-bold border-2 border-mint/30 rounded-[14px] cursor-pointer tracking-[0.5px] relative z-10 hover:border-mint/60 hover:bg-mint/5 transition-all">
+        <button
+          onClick={handleAlreadyHaveAccount}
+          className="w-full max-w-[360px] py-[18px] bg-transparent text-mint font-body text-[15px] font-bold border-2 border-mint/30 rounded-[14px] cursor-pointer tracking-[0.5px] relative z-10 hover:border-mint/60 hover:bg-mint/5 transition-all"
+        >
           I Already Have An Account
         </button>
 

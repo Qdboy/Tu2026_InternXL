@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Bookmark, Star } from "lucide-react";
 import { toast } from "sonner";
 
 interface NewsArticle {
@@ -129,6 +130,50 @@ export default function NewsPage() {
       {/* Feed */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-5 space-y-3.5">
+          {/* Featured Blog Post */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-1.5">
+              <Star className="w-3.5 h-3.5 text-primary fill-primary" />
+              <span className="text-xs font-bold text-primary tracking-widest uppercase">Featured</span>
+            </div>
+            <div className="bg-card rounded-2xl overflow-hidden border-2 border-primary/20 shadow-[0_4px_20px_rgba(232,86,10,0.1)]">
+              <div className="h-40 relative overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&q=80"
+                  alt="Understanding local politics"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-dark-char/90 via-dark-char/30 to-transparent" />
+                <div className="absolute top-3 left-3">
+                  <span className="py-1 px-2.5 rounded-full text-[9px] font-extrabold tracking-wider uppercase bg-primary text-on-dark">
+                    📝 Blog
+                  </span>
+                </div>
+                <div className="absolute bottom-3 left-3 right-3">
+                  <h3 className="font-display text-base font-bold text-on-dark leading-tight">
+                    Why Your City Council Vote Matters More Than You Think
+                  </h3>
+                  <p className="text-[10px] text-on-dark/70 mt-1">By Sarah Chen · 6 min read</p>
+                </div>
+              </div>
+              <div className="p-3.5 space-y-2">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  Most young voters focus on presidential races, but the decisions that affect your rent, your commute, and your neighborhood happen at city hall. Here's why showing up for local elections can change your daily life.
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-1.5">
+                    <span className="py-[3px] px-2.5 rounded-[10px] text-[10px] font-bold bg-orange-pale text-primary">🏘️ Housing</span>
+                    <span className="py-[3px] px-2.5 rounded-[10px] text-[10px] font-bold bg-[#E8F4E0] text-forest">🎓 Civic Ed</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] text-sage font-semibold">▲ 3.4k</span>
+                    <Bookmark className="w-3.5 h-3.5 text-sage cursor-pointer hover:text-primary" onClick={() => toast("Saved!")} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {filtered.map((article) => {
             const style = LEVEL_STYLES[article.level];
             return (

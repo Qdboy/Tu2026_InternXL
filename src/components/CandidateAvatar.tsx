@@ -6,16 +6,23 @@ interface CandidateAvatarProps {
   className?: string;
 }
 
+function getPartyKey(party: string): string {
+  const p = party.toLowerCase();
+  if (p.includes("democrat")) return "Democrat";
+  if (p.includes("republican")) return "Republican";
+  return "Independent";
+}
+
 const partyRing: Record<string, string> = {
-  Democrat: "ring-[#2c5282]",
-  Republican: "ring-[#7B1E1E]",
-  Independent: "ring-forest",
+  Democrat: "ring-[hsl(215,50%,35%)]",
+  Republican: "ring-[hsl(0,50%,30%)]",
+  Independent: "ring-[hsl(45,60%,40%)]",
 };
 
 const partyBg: Record<string, string> = {
-  Democrat: "bg-gradient-to-br from-[#2c5282] to-[#3a78b0]",
-  Republican: "bg-gradient-to-br from-[#7B1E1E] to-[#A83232]",
-  Independent: "bg-gradient-to-br from-forest to-olive",
+  Democrat: "bg-gradient-to-br from-[hsl(215,50%,35%)] to-[hsl(215,55%,50%)]",
+  Republican: "bg-gradient-to-br from-[hsl(0,50%,25%)] to-[hsl(0,55%,40%)]",
+  Independent: "bg-gradient-to-br from-[hsl(45,50%,35%)] to-[hsl(45,50%,50%)]",
 };
 
 function cleanNameForWikipedia(name: string): string {
@@ -59,9 +66,10 @@ const CandidateAvatar = ({ name, party, className = "" }: CandidateAvatarProps) 
     return () => { cancelled = true; };
   }, [name]);
 
-  const ring = partyRing[party] || partyRing.Independent;
+  const key = getPartyKey(party);
+  const ring = partyRing[key];
   const initials = name.split(" ").map((n) => n[0]).join("").slice(0, 2);
-  const bg = partyBg[party] || partyBg.Independent;
+  const bg = partyBg[key];
 
   if (loading) {
     return (

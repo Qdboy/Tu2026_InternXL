@@ -22,12 +22,20 @@ const Candidates = () => {
       try {
         const parsed = JSON.parse(stored);
         if (parsed.profile) {
-          setProfile(parsed.profile);
+          const p = { ...parsed.profile };
+          if (parsed.residential) {
+            p.zipCode = p.zipCode || parsed.residential.address || "";
+            p.city = parsed.residential.city || "";
+            p.state = parsed.residential.state || "";
+          }
+          setProfile(p);
         } else if (parsed.residential) {
           setProfile({
             name: "",
             occupation: "",
             zipCode: parsed.residential.address || "",
+            city: parsed.residential.city || "",
+            state: parsed.residential.state || "",
             interests: [],
             transport: [],
           });

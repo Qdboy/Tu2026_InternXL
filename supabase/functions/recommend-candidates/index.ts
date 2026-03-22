@@ -47,7 +47,7 @@ Return a JSON object with a "recommendations" array. Each recommendation has: of
 
 Focus on races happening in ${currentYear}-${currentYear + 1}. Include at least 2 candidates per office. Return ONLY the JSON object.`;
 
-    const response = await fetch("https://api.lovable.dev/v1/chat/completions", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
