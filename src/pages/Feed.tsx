@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import politiULogo from "@/assets/PolitiULogo.png";
 import { motion } from "framer-motion";
 import LevelTag from "@/components/LevelTag";
 import FeedReactions from "@/components/FeedReactions";
@@ -171,11 +172,11 @@ const Feed = () => {
       {/* Dark header */}
       <div className="bg-dark-surface px-5 pt-4 pb-0">
         <div className="flex items-center justify-between mb-3.5">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary-foreground flex items-center justify-center">
-              <span className="font-display font-black text-primary text-sm">P</span>
+           <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-card flex items-center justify-center overflow-hidden">
+              <img src={politiULogo} alt="Politi-U" className="w-7 h-7 object-contain" />
             </div>
-            <h1 className="font-display font-black text-on-dark text-xl">Politi<span className="text-orange-light">U</span></h1>
+            <h1 className="font-display font-black text-on-dark text-xl">Politi-<span className="text-orange-light">U</span></h1>
           </div>
           <div className="flex items-center gap-3">
             {profile && (

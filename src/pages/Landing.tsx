@@ -1,3 +1,5 @@
+import politiULogo from "@/assets/PolitiULogo.png";
+
 export default function Landing({ onGetStarted }: { onGetStarted: () => void }) {
   return (
     <div className="flex flex-col h-screen max-w-lg mx-auto bg-dark-char relative overflow-hidden">
@@ -20,14 +22,12 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
         />
 
         {/* Logo */}
-        <div className="w-[120px] h-[120px] rounded-[30px] bg-card flex items-center justify-center mb-7 shadow-[0_0_0_8px_rgba(232,86,10,0.18),0_24px_56px_rgba(0,0,0,0.5)] relative z-10">
-          <span className="font-display text-5xl font-black text-foreground">
-            P<span className="text-primary">U</span>
-          </span>
+        <div className="w-[120px] h-[120px] rounded-[30px] bg-card flex items-center justify-center mb-7 shadow-[0_0_0_8px_rgba(232,86,10,0.18),0_24px_56px_rgba(0,0,0,0.5)] relative z-10 overflow-hidden">
+          <img src={politiULogo} alt="PolitiU" className="w-[90px] h-[90px] object-contain" />
         </div>
 
         <h1 className="font-display text-[54px] font-black text-on-dark text-center leading-none mb-2.5 relative z-10">
-          Politi<span className="text-orange-light">U</span>
+          Politi-<span className="text-orange-light">U</span>
         </h1>
         <p className="text-[13px] text-on-dark/40 text-center mb-14 tracking-[2.5px] uppercase relative z-10">
           Your Civic Companion
