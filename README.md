@@ -1,2 +1,3 @@
-# Tu2026_InternXL
-Hackathon
+# Welcome to your Lovable project
+
+TODO: Document your project here
