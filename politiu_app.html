@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolitiU – Voter Education App</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0B1F3A;
+    --gold: #C8973A;
+    --gold-light: #F0C97A;
+    --cream: #F5EFE0;
+    --white: #FFFFFF;
+    --gray: #8A96A3;
+    --light-gray: #EFF1F4;
+    --red: #C0392B;
+    --green: #1A7A4A;
+    --blue-tag: #1A4B8C;
+    --surface: #FFFFFF;
+    --border: #E2E6EA;
+    --text: #0B1F3A;
+    --subtext: #5A6A7A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  /* PHONE FRAME */
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--cream);
+    border-radius: 54px;
+    border: 12px solid #2a2a3e;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 0 2px #3a3a5e;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* NOTCH */
+  .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 130px; height: 34px;
+    background: #2a2a3e;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+  }
+
+  /* SCREEN */
+  .screen {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    display: none;
+    flex-direction: column;
+    background: var(--cream);
+  }
+  .screen.active { display: flex; }
+
+  /* STATUS BAR */
+  .status-bar {
+    height: 44px;
+    background: var(--navy);
+    display: flex;
+    align-items: flex-end;
+    padding: 0 28px 8px;
+    justify-content: space-between;
+    flex-shrink: 0;
+    padding-top: 10px;
+  }
+  .status-time { color: white; font-size: 15px; font-weight: 600; }
+  .status-icons { color: white; font-size: 13px; display: flex; gap: 6px; }
+
+  /* SCROLL CONTENT */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* NAV BAR */
+  .nav-bar {
+    height: 82px;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border-top: 2px solid rgba(200,151,58,0.3);
+    flex-shrink: 0;
+    padding-bottom: 18px;
+  }
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    padding: 4px 12px;
+    border-radius: 12px;
+    transition: all 0.2s;
+    flex: 1;
+  }
+  .nav-item.active .nav-icon { color: var(--gold); }
+  .nav-item.active .nav-label { color: var(--gold); }
+  .nav-icon { font-size: 22px; color: rgba(255,255,255,0.45); transition: color 0.2s; }
+  .nav-label { font-size: 10px; color: rgba(255,255,255,0.45); font-weight: 500; letter-spacing: 0.3px; }
+  .nav-item.active .nav-icon { transform: translateY(-1px); }
+
+  /* ===================== LANDING PAGE ===================== */
+  #screen-landing {
+    background: var(--navy);
+  }
+  .landing-bg {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .landing-bg::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: -120px;
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(200,151,58,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .landing-bg::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(200,151,58,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .logo-seal {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #8B6020);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    box-shadow: 0 0 0 8px rgba(200,151,58,0.15), 0 20px 40px rgba(0,0,0,0.4);
+    position: relative;
+  }
+  .logo-seal::after {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255,255,255,0.3);
+  }
+  .logo-seal-text { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 900; color: var(--navy); }
+  .landing-title { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--white); text-align: center; line-height: 1; margin-bottom: 8px; }
+  .landing-title span { color: var(--gold); }
+  .landing-sub { font-size: 13px; color: rgba(255,255,255,0.5); text-align: center; margin-bottom: 60px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .landing-divider { width: 60px; height: 2px; background: var(--gold); margin: 0 auto 48px; opacity: 0.6; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--gold), #A67828);
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 24px rgba(200,151,58,0.35);
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .btn-secondary {
+    width: 100%;
+    padding: 18px;
+    background: transparent;
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 14px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .landing-footer { margin-top: 40px; font-size: 11px; color: rgba(255,255,255,0.25); text-align: center; letter-spacing: 0.5px; }
+
+  /* ===================== ONBOARDING PAGE ===================== */
+  #screen-onboarding { background: var(--cream); }
+
+  .ob-header {
+    background: var(--navy);
+    padding: 20px 24px 28px;
+    flex-shrink: 0;
+  }
+  .ob-back { color: var(--gold); font-size: 14px; cursor: pointer; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .ob-title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: white; }
+  .ob-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 4px; }
+  .ob-progress { display: flex; gap: 6px; margin-top: 20px; }
+  .ob-step { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.2); }
+  .ob-step.done { background: var(--gold); }
+
+  .ob-body { padding: 24px 20px; }
+
+  .form-section { margin-bottom: 24px; }
+  .form-label { font-size: 11px; font-weight: 600; color: var(--subtext); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+  .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+  }
+  .form-input:focus { border-color: var(--gold); }
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-section { flex: 1; }
+
+  .form-select {
+    width: 100%;
+    padding: 14px 16px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A96A3' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  .interest-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .interest-chip {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--subtext);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .interest-chip.selected { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+
+  .ob-submit {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--gold), #A67828);
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 8px;
+    box-shadow: 0 8px 24px rgba(200,151,58,0.3);
+  }
+
+  /* ===================== NEWS FEED ===================== */
+  #screen-news { background: #F2EDE3; }
+
+  .news-header {
+    background: var(--navy);
+    padding: 18px 20px 0;
+    flex-shrink: 0;
+  }
+  .news-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .news-logo { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: white; }
+  .news-logo span { color: var(--gold); }
+  .news-bell { color: rgba(255,255,255,0.6); font-size: 20px; }
+  .news-filter-tabs { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 0; }
+  .news-filter-tabs::-webkit-scrollbar { display: none; }
+  .filter-tab {
+    padding: 8px 16px;
+    border-radius: 20px 20px 0 0;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.3px;
+  }
+  .filter-tab.active { background: #F2EDE3; color: var(--navy); }
+
+  .news-feed-body { padding: 16px; }
+
+  .news-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  .news-card-img {
+    height: 140px;
+    background: linear-gradient(135deg, #2c4a6e, #1a3a5c);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 12px;
+  }
+  .news-card-img.federal { background: linear-gradient(135deg, #0B1F3A, #1a4080); }
+  .news-card-img.state { background: linear-gradient(135deg, #1A4B3A, #2a6a50); }
+  .news-card-img.local { background: linear-gradient(135deg, #5A2A0B, #8B4513); }
+  .news-card-img-pattern {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 10px);
+  }
+  .news-gov-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+  .badge-federal { background: rgba(200,151,58,0.9); color: var(--navy); }
+  .badge-state { background: rgba(255,255,255,0.9); color: #1A4B3A; }
+  .badge-local { background: rgba(255,255,255,0.9); color: #5A2A0B; }
+
+  .news-card-body { padding: 14px; }
+  .news-card-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 8px; }
+  .news-card-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .news-source { font-size: 11px; color: var(--subtext); font-weight: 500; }
+  .news-time { font-size: 11px; color: var(--gray); }
+  .news-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .news-tag { padding: 3px 9px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .tag-economy { background: #FEF3C7; color: #92400E; }
+  .tag-healthcare { background: #ECFDF5; color: #065F46; }
+  .tag-education { background: #EEF2FF; color: #3730A3; }
+  .tag-environment { background: #F0FDF4; color: #166534; }
+  .tag-housing { background: #FFF7ED; color: #9A3412; }
+  .news-card-footer { display: flex; padding: 10px 14px; border-top: 1px solid var(--light-gray); gap: 16px; }
+  .news-action { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--gray); }
+
+  /* ===================== EVENTS PAGE ===================== */
+  #screen-events { background: var(--cream); }
+
+  .events-header {
+    background: var(--navy);
+    padding: 18px 20px 20px;
+    flex-shrink: 0;
+  }
+  .page-title-row { display: flex; align-items: center; justify-content: space-between; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: white; }
+  .map-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .map-toggle-btn {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .map-toggle-btn.active { background: var(--gold); color: var(--navy); border-radius: 6px; }
+
+  .map-view {
+    height: 220px;
+    background: #d1e8ff;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .map-grid-h, .map-grid-v {
+    position: absolute;
+    background: rgba(0,0,0,0.08);
+  }
+  .map-road-h { position: absolute; height: 6px; background: rgba(255,255,255,0.7); left: 0; right: 0; border-radius: 3px; }
+  .map-road-v { position: absolute; width: 6px; background: rgba(255,255,255,0.7); top: 0; bottom: 0; border-radius: 3px; }
+  .map-block { position: absolute; background: #b8d4f0; border-radius: 4px; }
+  .map-pin {
+    position: absolute;
+    width: 32px; height: 32px;
+    background: var(--navy);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    cursor: pointer;
+  }
+  .map-pin.you { background: var(--gold); }
+  .map-pin-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    font-size: 12px;
+  }
+  .map-label {
+    position: absolute;
+    background: white;
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--navy);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    white-space: nowrap;
+  }
+
+  .events-list { padding: 16px; }
+  .section-label { font-size: 11px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 12px; }
+
+  .event-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .event-date-box {
+    width: 52px;
+    flex-shrink: 0;
+    background: var(--navy);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+  }
+  .event-month { font-size: 9px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 0.8px; }
+  .event-day { font-size: 26px; font-weight: 900; color: white; font-family: 'Playfair Display', serif; line-height: 1; }
+  .event-info { flex: 1; }
+  .event-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 4px; line-height: 1.2; }
+  .event-location { font-size: 12px; color: var(--subtext); margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+  .event-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .event-chip { padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 600; }
+  .chip-election { background: #FEF3C7; color: #92400E; }
+  .chip-rally { background: #EEF2FF; color: #3730A3; }
+  .chip-speech { background: #ECFDF5; color: #065F46; }
+  .chip-federal { background: #0B1F3A; color: var(--gold); }
+  .chip-state { background: #1A4B3A; color: white; }
+  .chip-local { background: #8B4513; color: white; }
+
+  /* ===================== CANDIDATES PAGE ===================== */
+  #screen-candidates { background: var(--cream); }
+
+  .cand-header {
+    background: var(--navy);
+    padding: 18px 20px 16px;
+    flex-shrink: 0;
+  }
+  .cand-search {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 11px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+  }
+
+  .cand-body { padding: 16px; }
+
+  .election-section { margin-bottom: 24px; }
+  .election-title { font-size: 12px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .election-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .candidate-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .cand-top { display: flex; gap: 12px; margin-bottom: 12px; }
+  .cand-avatar {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 900;
+    font-family: 'Playfair Display', serif;
+    flex-shrink: 0;
+    color: white;
+  }
+  .dem { background: linear-gradient(135deg, #1a4b8c, #2460b0); }
+  .rep { background: linear-gradient(135deg, #8B1A1A, #B02222); }
+  .ind { background: linear-gradient(135deg, #2A6A3A, #3A8A4A); }
+
+  .cand-info { flex: 1; }
+  .cand-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 2px; font-family: 'Playfair Display', serif; }
+  .cand-position { font-size: 12px; color: var(--subtext); margin-bottom: 6px; }
+  .cand-party-badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+  .party-dem { background: #EEF2FF; color: #1a4b8c; }
+  .party-rep { background: #FEF2F2; color: #8B1A1A; }
+  .party-ind { background: #ECFDF5; color: #2A6A3A; }
+
+  .cand-detail-label { font-size: 10px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+  .cand-policies { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+  .policy-tag { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 600; background: var(--light-gray); color: var(--text); }
+  .cand-orgs { font-size: 12px; color: var(--subtext); }
+  .cand-prev { font-size: 12px; color: var(--subtext); margin-bottom: 10px; }
+
+  /* ===================== DOCUMENTS PAGE ===================== */
+  #screen-documents { background: var(--cream); }
+
+  .docs-header {
+    background: var(--navy);
+    padding: 18px 20px 20px;
+    flex-shrink: 0;
+  }
+  .docs-body { padding: 20px; }
+
+  .upload-zone {
+    border: 2px dashed var(--gold);
+    border-radius: 20px;
+    padding: 36px 24px;
+    text-align: center;
+    background: rgba(200,151,58,0.05);
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  .upload-icon { font-size: 40px; margin-bottom: 12px; }
+  .upload-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .upload-sub { font-size: 13px; color: var(--subtext); margin-bottom: 16px; }
+  .upload-btns { display: flex; gap: 10px; justify-content: center; }
+  .upload-btn-sm {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid var(--navy);
+    background: transparent;
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .upload-btn-sm.fill { background: var(--navy); color: white; }
+
+  .doc-or { text-align: center; color: var(--gray); font-size: 13px; margin: 16px 0; position: relative; }
+  .doc-or::before, .doc-or::after { content: ''; position: absolute; top: 50%; width: 38%; height: 1px; background: var(--border); }
+  .doc-or::before { left: 0; }
+  .doc-or::after { right: 0; }
+
+  .link-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    background: white;
+    margin-bottom: 20px;
+  }
+
+  .doc-section { margin-bottom: 20px; }
+  .doc-section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .summary-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+  }
+  .summary-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .summary-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .summary-doc-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .summary-doc-date { font-size: 11px; color: var(--gray); }
+  .summary-text { font-size: 13px; color: var(--subtext); line-height: 1.6; }
+  .summary-key-points { margin-top: 10px; }
+  .key-point { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 5px; font-size: 12px; color: var(--subtext); }
+  .key-point::before { content: '▶'; color: var(--gold); font-size: 8px; margin-top: 3px; flex-shrink: 0; }
+
+  /* ===================== PERSONAL PAGE ===================== */
+  #screen-personal { background: var(--cream); }
+
+  .personal-header {
+    background: var(--navy);
+    padding: 18px 20px 24px;
+    flex-shrink: 0;
+  }
+  .profile-row { display: flex; align-items: center; gap: 14px; margin-top: 14px; }
+  .profile-avatar {
+    width: 60px; height: 60px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--gold), #8B6020);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--navy);
+  }
+  .profile-name { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: white; }
+  .profile-status { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+
+  .voter-card {
+    margin: 16px 16px 0;
+    background: linear-gradient(135deg, var(--navy) 60%, #1a3a6e);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    border: 1px solid rgba(200,151,58,0.3);
+    flex-shrink: 0;
+  }
+  .voter-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .voter-card-label { font-size: 10px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
+  .voter-status-badge { padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+  .registered { background: rgba(26,122,74,0.3); color: #4ADE80; border: 1px solid rgba(74,222,128,0.3); }
+  .voter-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .voter-address { font-size: 12px; color: rgba(255,255,255,0.5); }
+  .voter-card-bottom { display: flex; justify-content: space-between; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1); }
+  .voter-detail { }
+  .voter-detail-label { font-size: 10px; color: rgba(255,255,255,0.4); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .voter-detail-value { font-size: 13px; font-weight: 600; color: white; }
+
+  .personal-body { padding: 16px; }
+
+  .settings-section { margin-bottom: 16px; }
+  .settings-section-title { font-size: 11px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; padding: 0 4px; }
+  .settings-group { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .settings-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    gap: 12px;
+    border-bottom: 1px solid var(--light-gray);
+    cursor: pointer;
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .si-blue { background: #EEF2FF; }
+  .si-green { background: #ECFDF5; }
+  .si-orange { background: #FFF7ED; }
+  .si-red { background: #FEF2F2; }
+  .si-purple { background: #F5F3FF; }
+  .settings-text { flex: 1; }
+  .settings-row-label { font-size: 14px; font-weight: 500; color: var(--text); }
+  .settings-row-sub { font-size: 11px; color: var(--subtext); margin-top: 1px; }
+  .settings-arrow { color: var(--gray); font-size: 14px; }
+  .toggle {
+    width: 44px; height: 26px;
+    border-radius: 13px;
+    background: var(--navy);
+    position: relative;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px; right: 3px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* Shared helpers */
+  .page-subtitle { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+  /* Animate in */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .screen.active { animation: fadeIn 0.3s ease; }
+</style>
+</head>
+<body>
+
+<!-- ===================== PHONE 1: LANDING ===================== -->
+<div class="phone" id="phone1">
+  <div class="notch"></div>
+  <!-- LANDING SCREEN -->
+  <div class="screen active" id="screen-landing">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="landing-bg">
+      <div class="logo-seal"><span class="logo-seal-text">P</span></div>
+      <div class="landing-title">Politi<span>U</span></div>
+      <div class="landing-sub">Your Civic Companion</div>
+      <div class="landing-divider"></div>
+      <button class="btn-primary" onclick="showOnboarding()">Create Account</button>
+      <button class="btn-secondary" onclick="showApp()">Sign In</button>
+      <div class="landing-footer">Empowering informed voters since 2024</div>
+    </div>
+  </div>
+  <!-- ONBOARDING SCREEN -->
+  <div class="screen" id="screen-onboarding">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="ob-header">
+      <div class="ob-back" onclick="showLanding()">← Back</div>
+      <div class="ob-title">Tell Us About You</div>
+      <div class="ob-sub">Personalize your civic experience</div>
+      <div class="ob-progress">
+        <div class="ob-step done"></div>
+        <div class="ob-step done"></div>
+        <div class="ob-step"></div>
+        <div class="ob-step"></div>
+        <div class="ob-step"></div>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="ob-body">
+        <div class="form-row">
+          <div class="form-section">
+            <label class="form-label">First Name</label>
+            <input class="form-input" type="text" placeholder="Jane" />
+          </div>
+          <div class="form-section">
+            <label class="form-label">Last Name</label>
+            <input class="form-input" type="text" placeholder="Doe" />
+          </div>
+        </div>
+        <div class="form-section">
+          <label class="form-label">Date of Birth</label>
+          <input class="form-input" type="text" placeholder="MM / DD / YYYY" />
+        </div>
+        <div class="form-section">
+          <label class="form-label">Occupation</label>
+          <input class="form-input" type="text" placeholder="e.g. Teacher, Engineer…" />
+        </div>
+        <div class="form-section">
+          <label class="form-label">Annual Income Range</label>
+          <select class="form-select">
+            <option>Select range…</option>
+            <option>Under $25,000</option>
+            <option>$25,000 – $50,000</option>
+            <option>$50,000 – $75,000</option>
+            <option>$75,000 – $100,000</option>
+            <option>$100,000 – $150,000</option>
+            <option>Over $150,000</option>
+          </select>
+        </div>
+        <div class="form-section">
+          <label class="form-label">Home Address</label>
+          <input class="form-input" type="text" placeholder="123 Main St, City, State ZIP" />
+        </div>
+        <div class="form-section">
+          <label class="form-label">Areas of Interest</label>
+          <div class="interest-grid">
+            <div class="interest-chip selected" onclick="this.classList.toggle('selected')">🏥 Healthcare</div>
+            <div class="interest-chip selected" onclick="this.classList.toggle('selected')">💰 Economy</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🎓 Education</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🌿 Environment</div>
+            <div class="interest-chip selected" onclick="this.classList.toggle('selected')">🏘️ Housing</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🔒 Public Safety</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🚦 Infrastructure</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">⚖️ Civil Rights</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🌍 Foreign Policy</div>
+            <div class="interest-chip" onclick="this.classList.toggle('selected')">🧾 Tax Policy</div>
+          </div>
+        </div>
+        <button class="ob-submit" onclick="showApp()">Complete Setup →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PHONE 2: NEWS ===================== -->
+<div class="phone" id="phone2">
+  <div class="notch"></div>
+  <div class="screen active" id="screen-news">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="news-header">
+      <div class="news-header-top">
+        <div class="news-logo">Politi<span>U</span></div>
+        <div class="news-bell">🔔</div>
+      </div>
+      <div class="news-filter-tabs">
+        <div class="filter-tab active">All</div>
+        <div class="filter-tab">Federal</div>
+        <div class="filter-tab">State</div>
+        <div class="filter-tab">Local</div>
+        <div class="filter-tab">For You</div>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="news-feed-body">
+        <!-- Card 1 -->
+        <div class="news-card">
+          <div class="news-card-img federal">
+            <div class="news-card-img-pattern"></div>
+            <span class="news-gov-badge badge-federal">⬟ Federal</span>
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-title">Senate Passes Bipartisan Infrastructure Spending Bill</div>
+            <div class="news-card-meta">
+              <span class="news-source">Reuters · Washington</span>
+              <span class="news-time">2h ago</span>
+            </div>
+            <div class="news-tags">
+              <span class="news-tag tag-economy">💰 Economy</span>
+              <span class="news-tag tag-housing">🏘️ Housing</span>
+            </div>
+          </div>
+          <div class="news-card-footer">
+            <div class="news-action">▲ 1.2k</div>
+            <div class="news-action">💬 348</div>
+            <div class="news-action">↗ Share</div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="news-card">
+          <div class="news-card-img state">
+            <div class="news-card-img-pattern"></div>
+            <span class="news-gov-badge badge-state">◈ State</span>
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-title">Georgia Legislature Debates Education Funding Overhaul</div>
+            <div class="news-card-meta">
+              <span class="news-source">AJC · Atlanta, GA</span>
+              <span class="news-time">5h ago</span>
+            </div>
+            <div class="news-tags">
+              <span class="news-tag tag-education">🎓 Education</span>
+              <span class="news-tag tag-economy">💰 Economy</span>
+            </div>
+          </div>
+          <div class="news-card-footer">
+            <div class="news-action">▲ 842</div>
+            <div class="news-action">💬 197</div>
+            <div class="news-action">↗ Share</div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="news-card">
+          <div class="news-card-img local">
+            <div class="news-card-img-pattern"></div>
+            <span class="news-gov-badge badge-local">◉ Local</span>
+          </div>
+          <div class="news-card-body">
+            <div class="news-card-title">Atlanta City Council Approves Affordable Housing Expansion</div>
+            <div class="news-card-meta">
+              <span class="news-source">Atlanta Civic Press</span>
+              <span class="news-time">8h ago</span>
+            </div>
+            <div class="news-tags">
+              <span class="news-tag tag-housing">🏘️ Housing</span>
+              <span class="news-tag tag-economy">💰 Economy</span>
+            </div>
+          </div>
+          <div class="news-card-footer">
+            <div class="news-action">▲ 523</div>
+            <div class="news-action">💬 91</div>
+            <div class="news-action">↗ Share</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item active"><div class="nav-icon">📰</div><div class="nav-label">News</div></div>
+      <div class="nav-item"><div class="nav-icon">📍</div><div class="nav-label">Events</div></div>
+      <div class="nav-item"><div class="nav-icon">🏛️</div><div class="nav-label">Candidates</div></div>
+      <div class="nav-item"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Personal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PHONE 3: EVENTS ===================== -->
+<div class="phone" id="phone3">
+  <div class="notch"></div>
+  <div class="screen active" id="screen-events">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="events-header">
+      <div class="page-title-row">
+        <div class="page-title">Events</div>
+        <div class="map-toggle">
+          <button class="map-toggle-btn">List</button>
+          <button class="map-toggle-btn active">Map</button>
+        </div>
+      </div>
+      <div class="page-subtitle">3 upcoming near Atlanta, GA</div>
+    </div>
+    <!-- Map View -->
+    <div class="map-view">
+      <!-- Roads -->
+      <div class="map-road-h" style="top:40%"></div>
+      <div class="map-road-h" style="top:70%"></div>
+      <div class="map-road-v" style="left:30%"></div>
+      <div class="map-road-v" style="left:65%"></div>
+      <!-- Blocks -->
+      <div class="map-block" style="top:12%;left:8%;width:18%;height:22%"></div>
+      <div class="map-block" style="top:12%;left:35%;width:24%;height:18%"></div>
+      <div class="map-block" style="top:48%;left:8%;width:18%;height:16%"></div>
+      <div class="map-block" style="top:48%;left:35%;width:24%;height:16%"></div>
+      <div class="map-block" style="top:10%;left:70%;width:22%;height:24%"></div>
+      <div class="map-block" style="top:48%;left:70%;width:22%;height:16%"></div>
+      <!-- You pin -->
+      <div class="map-pin you" style="top:38%;left:45%"><div class="map-pin-inner">📍</div></div>
+      <div class="map-label" style="top:22%;left:43%">You</div>
+      <!-- Event pins -->
+      <div class="map-pin" style="top:10%;left:16%"></div>
+      <div class="map-label" style="top:2%;left:5%">City Hall</div>
+      <div class="map-pin" style="top:55%;left:68%"></div>
+      <div class="map-label" style="top:72%;left:62%">Civic Ctr</div>
+      <div class="map-pin" style="top:16%;left:73%"></div>
+      <div class="map-label" style="top:8%;left:68%">GSU Arena</div>
+    </div>
+    <div class="scroll-content">
+      <div class="events-list">
+        <div class="section-label">This Week</div>
+        <div class="event-card">
+          <div class="event-date-box"><div class="event-month">Mar</div><div class="event-day">25</div></div>
+          <div class="event-info">
+            <div class="event-name">Mayoral Candidate Town Hall</div>
+            <div class="event-location">📍 Atlanta City Hall · 1.2 mi</div>
+            <div class="event-chips">
+              <span class="event-chip chip-speech">Speech</span>
+              <span class="event-chip chip-local">Local</span>
+            </div>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-date-box"><div class="event-month">Mar</div><div class="event-day">27</div></div>
+          <div class="event-info">
+            <div class="event-name">GA Senate Candidate Rally</div>
+            <div class="event-location">📍 GSU Convocation · 2.8 mi</div>
+            <div class="event-chips">
+              <span class="event-chip chip-rally">Rally</span>
+              <span class="event-chip chip-state">State</span>
+            </div>
+          </div>
+        </div>
+        <div class="section-label" style="margin-top:8px">Next Month</div>
+        <div class="event-card">
+          <div class="event-date-box"><div class="event-month">Apr</div><div class="event-day">8</div></div>
+          <div class="event-info">
+            <div class="event-name">Georgia Primary Election Day</div>
+            <div class="event-location">📍 Multiple Polling Sites</div>
+            <div class="event-chips">
+              <span class="event-chip chip-election">Election</span>
+              <span class="event-chip chip-state">State</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item"><div class="nav-icon">📰</div><div class="nav-label">News</div></div>
+      <div class="nav-item active"><div class="nav-icon">📍</div><div class="nav-label">Events</div></div>
+      <div class="nav-item"><div class="nav-icon">🏛️</div><div class="nav-label">Candidates</div></div>
+      <div class="nav-item"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Personal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PHONE 4: CANDIDATES + DOCUMENTS ===================== -->
+<div class="phone" id="phone4">
+  <div class="notch"></div>
+  <div class="screen active" id="screen-candidates">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="cand-header">
+      <div class="page-title-row">
+        <div class="page-title">Candidates</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:14px">⚙ Filter</div>
+      </div>
+      <div class="page-subtitle">Upcoming 2026 Elections</div>
+      <div class="cand-search">🔍  <span>Search candidates…</span></div>
+    </div>
+    <div class="scroll-content">
+      <div class="cand-body">
+        <div class="election-section">
+          <div class="election-title">U.S. Senate · Georgia</div>
+          <div class="candidate-card">
+            <div class="cand-top">
+              <div class="cand-avatar dem">OW</div>
+              <div class="cand-info">
+                <div class="cand-name">Olivia Washington</div>
+                <div class="cand-position">Running for U.S. Senate · GA</div>
+                <span class="cand-party-badge party-dem">Democrat</span>
+              </div>
+            </div>
+            <div class="cand-detail-label">Key Policies</div>
+            <div class="cand-policies">
+              <span class="policy-tag">Healthcare Access</span>
+              <span class="policy-tag">Climate Action</span>
+              <span class="policy-tag">Education Reform</span>
+            </div>
+            <div class="cand-detail-label">Previous Positions</div>
+            <div class="cand-prev">GA State Senator (2018–2024), Atlanta City Council (2014–2018)</div>
+            <div class="cand-detail-label">Affiliated Organizations</div>
+            <div class="cand-orgs">NAACP · Sierra Club · Georgia Teachers' Union</div>
+          </div>
+          <div class="candidate-card">
+            <div class="cand-top">
+              <div class="cand-avatar rep">RB</div>
+              <div class="cand-info">
+                <div class="cand-name">Robert Bradshaw</div>
+                <div class="cand-position">Running for U.S. Senate · GA</div>
+                <span class="cand-party-badge party-rep">Republican</span>
+              </div>
+            </div>
+            <div class="cand-detail-label">Key Policies</div>
+            <div class="cand-policies">
+              <span class="policy-tag">Tax Cuts</span>
+              <span class="policy-tag">Border Security</span>
+              <span class="policy-tag">2nd Amendment</span>
+            </div>
+            <div class="cand-detail-label">Previous Positions</div>
+            <div class="cand-prev">U.S. House Rep (2020–2024), Fulton County DA (2016–2020)</div>
+            <div class="cand-detail-label">Affiliated Organizations</div>
+            <div class="cand-orgs">NRA · GA Business Coalition · Heritage Foundation</div>
+          </div>
+        </div>
+        <div class="election-section">
+          <div class="election-title">Atlanta Mayor</div>
+          <div class="candidate-card">
+            <div class="cand-top">
+              <div class="cand-avatar ind">MP</div>
+              <div class="cand-info">
+                <div class="cand-name">Marcus Patterson</div>
+                <div class="cand-position">Running for Atlanta Mayor</div>
+                <span class="cand-party-badge party-ind">Independent</span>
+              </div>
+            </div>
+            <div class="cand-detail-label">Key Policies</div>
+            <div class="cand-policies">
+              <span class="policy-tag">Affordable Housing</span>
+              <span class="policy-tag">Transit</span>
+              <span class="policy-tag">Public Safety</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item"><div class="nav-icon">📰</div><div class="nav-label">News</div></div>
+      <div class="nav-item"><div class="nav-icon">📍</div><div class="nav-label">Events</div></div>
+      <div class="nav-item active"><div class="nav-icon">🏛️</div><div class="nav-label">Candidates</div></div>
+      <div class="nav-item"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Personal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PHONE 5: DOCUMENTS ===================== -->
+<div class="phone" id="phone5">
+  <div class="notch"></div>
+  <div class="screen active" id="screen-documents">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="docs-header">
+      <div class="page-title-row">
+        <div class="page-title">Documents</div>
+      </div>
+      <div class="page-subtitle">AI-powered civic document summarizer</div>
+    </div>
+    <div class="scroll-content">
+      <div class="docs-body">
+        <div class="upload-zone">
+          <div class="upload-icon">📋</div>
+          <div class="upload-title">Upload a Document</div>
+          <div class="upload-sub">PDFs, bills, ballots, forum posts — we'll summarize it</div>
+          <div class="upload-btns">
+            <button class="upload-btn-sm fill">📁 Upload PDF</button>
+            <button class="upload-btn-sm">📷 Scan</button>
+          </div>
+        </div>
+        <div class="doc-or">or paste a link</div>
+        <input class="link-input" placeholder="https://legis.ga.gov/bill/SB-1234…" />
+        <div class="doc-section">
+          <div class="doc-section-title">Recent Summaries</div>
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-icon">📜</div>
+              <div>
+                <div class="summary-doc-name">Georgia SB-214 · Healthcare</div>
+                <div class="summary-doc-date">Summarized Mar 20, 2026</div>
+              </div>
+            </div>
+            <div class="summary-text">This bill expands Medicaid eligibility criteria in Georgia for adults earning under 138% of the federal poverty level.</div>
+            <div class="summary-key-points">
+              <div class="key-point">Expands coverage to ~400,000 uninsured Georgians</div>
+              <div class="key-point">Funded 90% by federal matching grants</div>
+              <div class="key-point">Requires annual state budget allocation of $180M</div>
+              <div class="key-point">Effective date: January 1, 2027</div>
+            </div>
+          </div>
+          <div class="summary-card">
+            <div class="summary-header">
+              <div class="summary-icon">🏙️</div>
+              <div>
+                <div class="summary-doc-name">Atlanta Zoning Ordinance 2026-44</div>
+                <div class="summary-doc-date">Summarized Mar 18, 2026</div>
+              </div>
+            </div>
+            <div class="summary-text">Amends residential zoning codes to allow accessory dwelling units (ADUs) on single-family parcels citywide.</div>
+            <div class="summary-key-points">
+              <div class="key-point">Permits up to 800 sq ft secondary units on lots ≥ 5,000 sq ft</div>
+              <div class="key-point">No owner-occupancy requirement in first 5 years</div>
+              <div class="key-point">Aimed at increasing affordable housing stock</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item"><div class="nav-icon">📰</div><div class="nav-label">News</div></div>
+      <div class="nav-item"><div class="nav-icon">📍</div><div class="nav-label">Events</div></div>
+      <div class="nav-item"><div class="nav-icon">🏛️</div><div class="nav-label">Candidates</div></div>
+      <div class="nav-item active"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+      <div class="nav-item"><div class="nav-icon">👤</div><div class="nav-label">Personal</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PHONE 6: PERSONAL ===================== -->
+<div class="phone" id="phone6">
+  <div class="notch"></div>
+  <div class="screen active" id="screen-personal">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>●●●</span><span>WiFi</span><span>🔋</span></div>
+    </div>
+    <div class="personal-header">
+      <div class="page-title-row">
+        <div class="page-title">Personal</div>
+        <div style="color:rgba(255,255,255,0.5);font-size:20px">✏️</div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-avatar">JD</div>
+        <div>
+          <div class="profile-name">Jane Doe</div>
+          <div class="profile-status">Member since Jan 2026</div>
+        </div>
+      </div>
+    </div>
+    <div class="voter-card">
+      <div class="voter-card-top">
+        <div class="voter-card-label">🗳 Voter Registration Card</div>
+        <span class="voter-status-badge registered">✓ Registered</span>
+      </div>
+      <div class="voter-name">Jane A. Doe</div>
+      <div class="voter-address">1247 Peachtree St NE, Atlanta, GA 30309</div>
+      <div class="voter-card-bottom">
+        <div class="voter-detail">
+          <div class="voter-detail-label">District</div>
+          <div class="voter-detail-value">GA-05</div>
+        </div>
+        <div class="voter-detail">
+          <div class="voter-detail-label">Party</div>
+          <div class="voter-detail-value">Non-Partisan</div>
+        </div>
+        <div class="voter-detail">
+          <div class="voter-detail-label">Polling Place</div>
+          <div class="voter-detail-value">Parks Rec Ctr</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-content">
+      <div class="personal-body">
+        <div class="settings-section">
+          <div class="settings-section-title">My Information</div>
+          <div class="settings-group">
+            <div class="settings-row">
+              <div class="settings-icon si-blue">👤</div>
+              <div class="settings-text">
+                <div class="settings-row-label">Personal Details</div>
+                <div class="settings-row-sub">Name, DOB, Occupation</div>
+              </div>
+              <div class="settings-arrow">›</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-icon si-green">📍</div>
+              <div class="settings-text">
+                <div class="settings-row-label">Address & District</div>
+                <div class="settings-row-sub">GA-05 · Fulton County</div>
+              </div>
+              <div class="settings-arrow">›</div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Interests & Preferences</div>
+          <div class="settings-group">
+            <div class="settings-row">
+              <div class="settings-icon si-orange">⭐</div>
+              <div class="settings-text">
+                <div class="settings-row-label">Areas of Interest</div>
+                <div class="settings-row-sub">Healthcare, Economy, Housing</div>
+              </div>
+              <div class="settings-arrow">›</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-icon si-purple">🔔</div>
+              <div class="settings-text">
+                <div class="settings-row-label">Notifications</div>
+                <div class="settings-row-sub">Breaking civic news</div>
+              </div>
+              <div class="toggle"></div>
+            </div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Account</div>
+          <div class="settings-group">
+            <div class="settings-row">
+              <div class="settings-icon si-blue">🔐</div>
+              <div class="settings-text">
+                <div class="settings-row-label">Security & Privacy</div>
+              </div>
+              <div class="settings-arrow">›</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-icon si-red">🚪</div>
+              <div class="settings-text">
+                <div class="settings-row-label" style="color:#C0392B">Sign Out</div>
+              </div>
+              <div class="settings-arrow">›</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-bar">
+      <div class="nav-item"><div class="nav-icon">📰</div><div class="nav-label">News</div></div>
+      <div class="nav-item"><div class="nav-icon">📍</div><div class="nav-label">Events</div></div>
+      <div class="nav-item"><div class="nav-icon">🏛️</div><div class="nav-label">Candidates</div></div>
+      <div class="nav-item"><div class="nav-icon">📄</div><div class="nav-label">Documents</div></div>
+      <div class="nav-item active"><div class="nav-icon">👤</div><div class="nav-label">Personal</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showOnboarding() {
+    document.getElementById('screen-landing').classList.remove('active');
+    document.getElementById('screen-onboarding').classList.add('active');
+  }
+  function showLanding() {
+    document.getElementById('screen-onboarding').classList.remove('active');
+    document.getElementById('screen-landing').classList.add('active');
+  }
+  function showApp() {
+    document.getElementById('screen-landing').classList.remove('active');
+    document.getElementById('screen-onboarding').classList.remove('active');
+  }
+
+  // Interest chips
+  document.querySelectorAll('.interest-chip').forEach(chip => {
+    chip.addEventListener('click', () => chip.classList.toggle('selected'));
+  });
+
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Map toggle
+  document.querySelectorAll('.map-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.map-toggle-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
