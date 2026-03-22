@@ -9,7 +9,7 @@ import Landing from "@/pages/Landing";
 import Onboarding from "@/components/Onboarding";
 import AppBar from "@/components/AppBar";
 import BottomNav from "@/components/BottomNav";
-import NewsPage from "@/pages/News";
+import FeedPage from "@/pages/Feed";
 import EventsPage from "@/pages/Events";
 import CandidatesPage from "@/pages/Candidates";
 import DocumentsPage from "@/pages/Documents";
@@ -57,8 +57,8 @@ function AppContent() {
       <AppBar />
       <div className="flex-1 overflow-hidden">
         <Routes>
-          <Route path="/" element={<Navigate to="/news" replace />} />
-          <Route path="/news" element={<NewsPage />} />
+          <Route path="/" element={<Navigate to="/feed" replace />} />
+          <Route path="/feed" element={<FeedPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/candidates" element={<CandidatesPage />} />
           <Route path="/documents" element={<DocumentsPage />} />

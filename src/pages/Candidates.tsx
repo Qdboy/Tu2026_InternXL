@@ -1,196 +1,145 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Search, Loader2, Sparkles, RefreshCw } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import OfficeCard from "@/components/candidates/OfficeCard";
+import OfficeDetailDialog from "@/components/candidates/OfficeDetailDialog";
+import CandidateDetailDialog from "@/components/candidates/CandidateDetailDialog";
+import { Recommendation, Candidate, UserProfile } from "@/components/candidates/types";
 
-interface Candidate {
-  id: string;
-  name: string;
-  initials: string;
-  position: string;
-  party: "dem" | "rep" | "ind";
-  policies: string[];
-  previousPositions: string;
-  organizations?: string;
-  level: "federal" | "state" | "local";
-  electionTitle: string;
-}
+const Candidates = () => {
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedOffice, setSelectedOffice] = useState<Recommendation | null>(null);
+  const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
+  const { toast } = useToast();
 
-const MOCK_CANDIDATES: Candidate[] = [
-  {
-    id: "1",
-    name: "Angela Robinson",
-    initials: "AR",
-    position: "Running for U.S. House – GA-05",
-    party: "dem",
-    policies: ["Healthcare", "Education", "Climate"],
-    previousPositions: "Georgia State Senator (2018–2024), DeKalb County Board (2014–2018)",
-    organizations: "NAACP · Sierra Club · GA Education Alliance",
-    level: "federal",
-    electionTitle: "U.S. House – GA-05",
-  },
-  {
-    id: "2",
-    name: "James Mitchell",
-    initials: "JM",
-    position: "Running for U.S. House – GA-05",
-    party: "rep",
-    policies: ["Tax Cuts", "Border Security", "2nd Amendment"],
-    previousPositions: "U.S. House Rep (2020–2024), Fulton County DA (2016–2020)",
-    organizations: "NRA · GA Business Coalition · Heritage Foundation",
-    level: "federal",
-    electionTitle: "U.S. House – GA-05",
-  },
-  {
-    id: "3",
-    name: "Lisa Torres",
-    initials: "LT",
-    position: "Running for Governor of Georgia",
-    party: "dem",
-    policies: ["Medicaid Expansion", "Affordable Housing", "Criminal Justice"],
-    previousPositions: "GA Lt. Governor (2019–present), GA State Rep (2013–2019)",
-    level: "state",
-    electionTitle: "Georgia Governor",
-  },
-  {
-    id: "4",
-    name: "Marcus Patterson",
-    initials: "MP",
-    position: "Running for Atlanta Mayor",
-    party: "ind",
-    policies: ["Affordable Housing", "Transit", "Public Safety"],
-    previousPositions: "Atlanta City Council (2016–2024), District Attorney (2012–2016)",
-    level: "local",
-    electionTitle: "Atlanta Mayor",
-  },
-];
+  useEffect(() => {
+    const stored = localStorage.getItem("politiu_user_location");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed.profile) {
+          setProfile(parsed.profile);
+        } else if (parsed.residential) {
+          setProfile({
+            name: "",
+            occupation: "",
+            zipCode: parsed.residential.address || "",
+            interests: [],
+            transport: [],
+          });
+        }
+      } catch { /* ignore */ }
+    }
+  }, []);
 
-const PARTY_STYLES = {
-  dem: {
-    avatar: "bg-gradient-to-br from-[#2c5282] to-[#3a78b0]",
-    badge: "bg-[#EBF2FF] text-[#2c5282]",
-    label: "Democrat",
-  },
-  rep: {
-    avatar: "bg-gradient-to-br from-[#7B1E1E] to-[#A83232]",
-    badge: "bg-[#FFF0F0] text-[#7B1E1E]",
-    label: "Republican",
-  },
-  ind: {
-    avatar: "bg-gradient-to-br from-forest to-olive",
-    badge: "bg-mint text-forest",
-    label: "Independent",
-  },
-};
+  const fetchRecommendations = async () => {
+    if (!profile || loading) return;
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("recommend-candidates", {
+        body: { profile },
+      });
+      if (error) throw error;
+      if (data?.recommendations) {
+        setRecommendations(data.recommendations);
+      }
+    } catch (e: any) {
+      console.error("Recommend error:", e);
+      toast({ title: "Couldn't load recommendations", description: e?.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const LEVEL_FILTERS = ["All", "Federal", "State", "Local"];
+  useEffect(() => {
+    if (profile && recommendations.length === 0) {
+      fetchRecommendations();
+    }
+  }, [profile]);
 
-export default function CandidatesPage() {
-  const [search, setSearch] = useState("");
-  const [activeLevel, setActiveLevel] = useState("All");
-
-  const filtered = MOCK_CANDIDATES.filter((c) => {
-    const matchSearch = c.name.toLowerCase().includes(search.toLowerCase()) || c.position.toLowerCase().includes(search.toLowerCase());
-    const matchLevel = activeLevel === "All" || c.level === activeLevel.toLowerCase();
-    return matchSearch && matchLevel;
-  });
-
-  // Group by election
-  const grouped = filtered.reduce<Record<string, Candidate[]>>((acc, c) => {
-    if (!acc[c.electionTitle]) acc[c.electionTitle] = [];
-    acc[c.electionTitle].push(c);
-    return acc;
-  }, {});
+  const filtered = searchQuery
+    ? recommendations.filter((r) =>
+        r.office.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.candidates.some((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      )
+    : recommendations;
 
   return (
-    <div className="flex flex-col h-full bg-background">
-      {/* Search bar */}
-      <div className="bg-dark-char px-5 pt-3 pb-4 flex-shrink-0">
-        <h1 className="font-display text-xl font-bold text-on-dark mb-2.5">Candidates</h1>
-        <div className="bg-on-dark/10 rounded-xl py-2.5 px-4 flex items-center gap-2.5 text-on-dark/40 text-[13px] font-semibold border border-on-dark/8">
-          <span>🔍</span>
+    <div className="flex flex-col h-full overflow-y-auto">
+      <div className="bg-dark-surface px-5 pt-4 pb-3.5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-xl font-black text-on-dark">Races</h1>
+            <p className="text-xs text-on-dark/40 mt-0.5">Explore offices &amp; candidates</p>
+          </div>
+          {profile && (
+            <button
+              onClick={fetchRecommendations}
+              disabled={loading}
+              className="text-orange-light hover:text-orange-light/80 transition-colors disabled:opacity-50"
+              title="Refresh recommendations"
+            >
+              <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+            </button>
+          )}
+        </div>
+        <div className="mt-3 bg-on-dark/10 rounded-xl px-3.5 py-2.5 flex items-center gap-2 border border-on-dark/[0.08]">
+          <Search className="w-4 h-4 text-on-dark/40" />
           <input
             type="text"
-            placeholder="Search candidates…"
-            className="bg-transparent border-none outline-none flex-1 text-on-dark font-body text-[13px] font-semibold placeholder:text-on-dark/40"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search offices or candidates…"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-transparent text-[13px] font-semibold text-on-dark placeholder:text-on-dark/40 outline-none w-full"
           />
         </div>
-
-        {/* Level filters */}
-        <div className="flex gap-2 mt-2.5 overflow-x-auto scrollbar-none">
-          {LEVEL_FILTERS.map((level) => (
-            <button
-              key={level}
-              onClick={() => setActiveLevel(level)}
-              className={`py-2 px-3.5 rounded-full text-[10px] font-extrabold whitespace-nowrap cursor-pointer border-2 font-body transition-all min-h-[36px] ${
-                activeLevel === level
-                  ? "bg-primary border-primary text-on-dark"
-                  : "border-on-dark/15 text-on-dark/50 bg-transparent"
-              }`}
-            >
-              {level}
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* Candidate list */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-5">
-          {Object.entries(grouped).map(([title, candidates]) => (
-            <div key={title} className="mb-6">
-              <div className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-[1.2px] mb-3 flex items-center gap-2">
-                {title}
-                <div className="flex-1 h-px bg-border" />
-              </div>
-
-              {candidates.map((c) => {
-                const ps = PARTY_STYLES[c.party];
-                return (
-                  <div
-                    key={c.id}
-                    className="bg-card rounded-2xl p-4 mb-3 shadow-[0_2px_10px_rgba(42,48,40,0.07)] border border-border cursor-pointer hover:shadow-[0_4px_20px_rgba(42,48,40,0.14)] transition-shadow"
-                  >
-                    {/* Top row */}
-                    <div className="flex gap-3 mb-3">
-                      <div className={`w-[54px] h-[54px] rounded-[14px] flex items-center justify-center text-lg font-black font-display text-on-dark flex-shrink-0 ${ps.avatar}`}>
-                        {c.initials}
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-display text-base font-bold text-foreground mb-0.5">{c.name}</div>
-                        <div className="text-[11px] text-muted-foreground mb-1.5">{c.position}</div>
-                        <span className={`inline-block py-[3px] px-2.5 rounded-[10px] text-[10px] font-extrabold ${ps.badge}`}>
-                          {ps.label}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Policies */}
-                    <div className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-[1px] mb-1.5">Key Policies</div>
-                    <div className="flex flex-wrap gap-1.5 mb-2.5">
-                      {c.policies.map((p) => (
-                        <span key={p} className="py-1 px-2.5 rounded-full text-[10px] font-bold bg-background text-foreground border border-border">
-                          {p}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Previous positions */}
-                    <div className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-[1px] mb-1">Previous Positions</div>
-                    <p className="text-[11px] text-muted-foreground mb-2 leading-relaxed">{c.previousPositions}</p>
-
-                    {c.organizations && (
-                      <>
-                        <div className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-[1px] mb-1">Affiliated Organizations</div>
-                        <p className="text-[11px] text-muted-foreground leading-relaxed">{c.organizations}</p>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+      {!profile ? (
+        <div className="text-center py-20 px-4">
+          <Sparkles className="w-8 h-8 text-primary mx-auto mb-3" />
+          <p className="text-muted-foreground text-sm">Complete onboarding to get personalized candidate recommendations.</p>
+        </div>
+      ) : loading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">Finding races near you…</p>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-20 px-4">
+          <p className="text-muted-foreground text-sm">No races found.</p>
+          <button onClick={fetchRecommendations} disabled={loading} className="mt-3 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-bold">
+            Get Recommendations
+          </button>
+        </div>
+      ) : (
+        <div className="px-3.5 pt-3.5 pb-6 space-y-3">
+          {filtered.map((rec, i) => (
+            <OfficeCard key={i} office={rec} index={i} onSelect={setSelectedOffice} />
           ))}
         </div>
-      </div>
+      )}
+
+      <OfficeDetailDialog
+        office={selectedOffice}
+        open={!!selectedOffice}
+        onOpenChange={(open) => !open && setSelectedOffice(null)}
+        onSelectCandidate={(c) => {
+          setSelectedCandidate(c);
+        }}
+      />
+
+      <CandidateDetailDialog
+        candidate={selectedCandidate}
+        open={!!selectedCandidate}
+        onOpenChange={(open) => !open && setSelectedCandidate(null)}
+      />
     </div>
   );
-}
+};
+
+export default Candidates;
