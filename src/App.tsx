@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ThemeProvider, useTheme } from "@/hooks/use-theme";
 import Landing from "@/pages/Landing";
 import Onboarding from "@/components/Onboarding";
 import AppBar from "@/components/AppBar";
@@ -22,7 +23,16 @@ type AppScreen = "landing" | "onboarding" | "app";
 
 function AppContent() {
   const { hasCompletedOnboarding } = useUserLocation();
+  const { forceLight, restoreTheme } = useTheme();
   const [screen, setScreen] = useState<AppScreen>(hasCompletedOnboarding ? "app" : "landing");
+
+  useEffect(() => {
+    if (screen === "landing" || screen === "onboarding") {
+      forceLight();
+    } else {
+      restoreTheme();
+    }
+  }, [screen, forceLight, restoreTheme]);
 
   const handleSignOut = () => {
     localStorage.removeItem("politiu_user_location");
@@ -63,13 +73,15 @@ function AppContent() {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

@@ -103,13 +103,13 @@ export default function CandidatesPage() {
     <div className="flex flex-col h-full bg-background">
       {/* Search bar */}
       <div className="bg-dark-char px-5 pt-3 pb-4 flex-shrink-0">
-        <h1 className="font-display text-xl font-bold text-card mb-2.5">Candidates</h1>
-        <div className="bg-card/10 rounded-xl py-2.5 px-4 flex items-center gap-2.5 text-card/40 text-[13px] font-semibold border border-card/8">
+        <h1 className="font-display text-xl font-bold text-on-dark mb-2.5">Candidates</h1>
+        <div className="bg-on-dark/10 rounded-xl py-2.5 px-4 flex items-center gap-2.5 text-on-dark/40 text-[13px] font-semibold border border-on-dark/8">
           <span>🔍</span>
           <input
             type="text"
             placeholder="Search candidates…"
-            className="bg-transparent border-none outline-none flex-1 text-card font-body text-[13px] font-semibold placeholder:text-card/40"
+            className="bg-transparent border-none outline-none flex-1 text-on-dark font-body text-[13px] font-semibold placeholder:text-on-dark/40"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -121,10 +121,10 @@ export default function CandidatesPage() {
             <button
               key={level}
               onClick={() => setActiveLevel(level)}
-              className={`py-1.5 px-3 rounded-full text-[10px] font-extrabold whitespace-nowrap cursor-pointer border-2 font-body transition-all ${
+              className={`py-2 px-3.5 rounded-full text-[10px] font-extrabold whitespace-nowrap cursor-pointer border-2 font-body transition-all min-h-[36px] ${
                 activeLevel === level
-                  ? "bg-primary border-primary text-card"
-                  : "border-card/15 text-card/50 bg-transparent"
+                  ? "bg-primary border-primary text-on-dark"
+                  : "border-on-dark/15 text-on-dark/50 bg-transparent"
               }`}
             >
               {level}
@@ -135,7 +135,7 @@ export default function CandidatesPage() {
 
       {/* Candidate list */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4">
+        <div className="p-5">
           {Object.entries(grouped).map(([title, candidates]) => (
             <div key={title} className="mb-6">
               <div className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-[1.2px] mb-3 flex items-center gap-2">
@@ -152,7 +152,7 @@ export default function CandidatesPage() {
                   >
                     {/* Top row */}
                     <div className="flex gap-3 mb-3">
-                      <div className={`w-[54px] h-[54px] rounded-[14px] flex items-center justify-center text-lg font-black font-display text-card flex-shrink-0 ${ps.avatar}`}>
+                      <div className={`w-[54px] h-[54px] rounded-[14px] flex items-center justify-center text-lg font-black font-display text-on-dark flex-shrink-0 ${ps.avatar}`}>
                         {c.initials}
                       </div>
                       <div className="flex-1">

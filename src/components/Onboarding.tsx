@@ -79,7 +79,7 @@ export default function Onboarding({ onComplete, onBack }: OnboardingProps) {
   const doneSteps = 2;
 
   return (
-    <div className="flex flex-col h-full bg-background">
+    <div className="flex flex-col h-screen max-w-lg mx-auto bg-background">
       {/* Header */}
       <div className="bg-dark-char px-6 pt-5 pb-6 flex-shrink-0">
         <button
@@ -88,8 +88,8 @@ export default function Onboarding({ onComplete, onBack }: OnboardingProps) {
         >
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
-        <h1 className="font-display text-2xl font-bold text-card">Set Up Your Profile</h1>
-        <p className="text-xs text-card/45 mt-1">Tell us about yourself to personalize your experience</p>
+        <h1 className="font-display text-2xl font-bold text-on-dark">Set Up Your Profile</h1>
+        <p className="text-xs text-on-dark/45 mt-1">Tell us about yourself to personalize your experience</p>
 
         <div className="flex gap-1.5 mt-4">
           {Array.from({ length: steps }).map((_, i) => (
@@ -193,7 +193,7 @@ export default function Onboarding({ onComplete, onBack }: OnboardingProps) {
 
           <button
             onClick={handleSubmit}
-            className="w-full py-[17px] bg-gradient-to-br from-orange-light to-burnt text-card font-body text-[15px] font-extrabold border-none rounded-[14px] cursor-pointer uppercase tracking-[1.2px] mt-2 shadow-[0_8px_24px_rgba(232,86,10,0.3)] hover:translate-y-[-1px] transition-transform"
+            className="w-full py-[17px] bg-gradient-to-br from-orange-light to-burnt text-on-dark font-body text-[15px] font-extrabold border-none rounded-[14px] cursor-pointer uppercase tracking-[1.2px] mt-2 shadow-[0_8px_24px_rgba(232,86,10,0.3)] hover:translate-y-[-1px] transition-transform"
           >
             Complete Setup →
           </button>

@@ -41,19 +41,19 @@ export default function EventsPage() {
       <div className="px-5 pt-3 pb-3.5 bg-dark-char flex-shrink-0">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-display text-xl font-bold text-card">Events</h2>
+            <h2 className="font-display text-xl font-bold text-on-dark">Events</h2>
             {districtName && <p className="text-xs font-semibold text-primary tracking-wide mt-0.5">{districtName}</p>}
-            <p className="text-xs text-card/40 mt-0.5">
+            <p className="text-xs text-on-dark/40 mt-0.5">
               {events.length} upcoming near {locationLabel}
             </p>
           </div>
 
           {/* View toggle */}
-          <div className="flex bg-card/10 rounded-[10px] overflow-hidden border border-card/10">
+          <div className="flex bg-on-dark/10 rounded-[10px] overflow-hidden border border-on-dark/10">
             <button
               onClick={() => setView("list")}
               className={`py-[7px] px-4 text-[11px] font-extrabold cursor-pointer border-none font-body transition-all ${
-                view === "list" ? "bg-gradient-to-br from-orange-light to-burnt text-card rounded-lg" : "text-card/45 bg-transparent"
+                view === "list" ? "bg-gradient-to-br from-orange-light to-burnt text-on-dark rounded-lg" : "text-on-dark/45 bg-transparent"
               }`}
             >
               List
@@ -61,7 +61,7 @@ export default function EventsPage() {
             <button
               onClick={() => setView("map")}
               className={`py-[7px] px-4 text-[11px] font-extrabold cursor-pointer border-none font-body transition-all ${
-                view === "map" ? "bg-gradient-to-br from-orange-light to-burnt text-card rounded-lg" : "text-card/45 bg-transparent"
+                view === "map" ? "bg-gradient-to-br from-orange-light to-burnt text-on-dark rounded-lg" : "text-on-dark/45 bg-transparent"
               }`}
             >
               Map

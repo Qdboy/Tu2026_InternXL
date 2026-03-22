@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useUserLocation } from "@/hooks/use-user-location";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
   const { location } = useUserLocation();
+  const { theme, toggleTheme } = useTheme();
   const [notificationsOn, setNotificationsOn] = useState(true);
-  const [darkModeOn, setDarkModeOn] = useState(false);
 
   const address = location.residential
     ? `${location.residential.address}, ${location.residential.city}, ${location.residential.state}`
@@ -16,27 +17,27 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
       {/* Header */}
       <div className="bg-dark-char px-5 pt-5 pb-6 flex-shrink-0">
         <div className="flex items-center justify-between mb-3.5">
-          <h1 className="font-display text-xl font-bold text-card">Personal</h1>
+          <h1 className="font-display text-xl font-bold text-on-dark">Personal</h1>
           <button
-            className="bg-transparent border-none cursor-pointer text-card/55 hover:text-orange-light transition-colors text-xl"
+            className="bg-transparent border-none cursor-pointer text-on-dark/55 hover:text-orange-light transition-colors text-xl"
             onClick={() => toast("Edit profile")}
           >
             ✏️
           </button>
         </div>
         <div className="flex items-center gap-3.5">
-          <div className="w-[58px] h-[58px] rounded-2xl bg-gradient-to-br from-orange-light to-burnt flex items-center justify-center font-display text-[22px] font-black text-card shadow-[0_4px_16px_rgba(232,86,10,0.4)]">
+          <div className="w-[58px] h-[58px] rounded-2xl bg-gradient-to-br from-orange-light to-burnt flex items-center justify-center font-display text-[22px] font-black text-on-dark shadow-[0_4px_16px_rgba(232,86,10,0.4)]">
             JD
           </div>
           <div>
-            <div className="font-display text-xl font-bold text-card">Jane Doe</div>
-            <div className="text-[11px] text-card/40 mt-0.5">Member since Jan 2026</div>
+            <div className="font-display text-xl font-bold text-on-dark">Jane Doe</div>
+            <div className="text-[11px] text-on-dark/40 mt-0.5">Member since Jan 2026</div>
           </div>
         </div>
       </div>
 
       {/* Voter card */}
-      <div className="mx-4 -mt-0 mt-4">
+      <div className="mx-5 mt-4">
         <div className="bg-gradient-to-br from-dark-char to-[#354A35] rounded-[18px] p-[17px_18px] shadow-[0_8px_28px_rgba(0,0,0,0.25)] border border-accent/25">
           <div className="flex justify-between items-start mb-2.5">
             <span className="text-[10px] font-extrabold text-orange-light uppercase tracking-[1px]">🗳 Voter Registration</span>
@@ -44,20 +45,20 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
               ✓ Registered
             </span>
           </div>
-          <div className="font-display text-lg font-bold text-card mb-[3px]">Jane A. Doe</div>
-          <div className="text-[11px] text-card/45">{address}</div>
-          <div className="flex justify-between mt-3 pt-3 border-t border-card/10">
+          <div className="font-display text-lg font-bold text-on-dark mb-[3px]">Jane A. Doe</div>
+          <div className="text-[11px] text-on-dark/45">{address}</div>
+          <div className="flex justify-between mt-3 pt-3 border-t border-on-dark/10">
             <div>
-              <div className="text-[9px] text-card/35 uppercase tracking-[0.5px] mb-0.5">District</div>
-              <div className="text-[13px] font-bold text-card">GA-05</div>
+              <div className="text-[9px] text-on-dark/35 uppercase tracking-[0.5px] mb-0.5">District</div>
+              <div className="text-[13px] font-bold text-on-dark">GA-05</div>
             </div>
             <div>
-              <div className="text-[9px] text-card/35 uppercase tracking-[0.5px] mb-0.5">Party</div>
-              <div className="text-[13px] font-bold text-card">Non-Partisan</div>
+              <div className="text-[9px] text-on-dark/35 uppercase tracking-[0.5px] mb-0.5">Party</div>
+              <div className="text-[13px] font-bold text-on-dark">Non-Partisan</div>
             </div>
             <div>
-              <div className="text-[9px] text-card/35 uppercase tracking-[0.5px] mb-0.5">Polling Place</div>
-              <div className="text-[13px] font-bold text-card">Parks Rec Ctr</div>
+              <div className="text-[9px] text-on-dark/35 uppercase tracking-[0.5px] mb-0.5">Polling Place</div>
+              <div className="text-[13px] font-bold text-on-dark">Parks Rec Ctr</div>
             </div>
           </div>
         </div>
@@ -65,7 +66,7 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
 
       {/* Settings */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-4">
+        <div className="p-5 space-y-4">
           {/* My Information */}
           <SettingsSection title="My Information">
             <SettingsRow icon="👤" iconBg="bg-orange-pale" label="Personal Details" sub="Name, DOB, Occupation" />
@@ -76,7 +77,7 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
           <SettingsSection title="Interests & Preferences">
             <SettingsRow icon="⭐" iconBg="bg-orange-pale" label="Areas of Interest" sub="Healthcare, Economy, Housing" />
             <ToggleRow icon="🔔" iconBg="bg-mint" label="Notifications" sub="Breaking civic news alerts" value={notificationsOn} onToggle={() => setNotificationsOn(!notificationsOn)} />
-            <ToggleRow icon="🌙" iconBg="bg-orange-pale" label="Dark Mode" sub="Currently: System default" value={darkModeOn} onToggle={() => setDarkModeOn(!darkModeOn)} last />
+            <ToggleRow icon="🌙" iconBg="bg-orange-pale" label="Dark Mode" sub={`Currently: ${theme === "dark" ? "Dark" : "Light"}`} value={theme === "dark"} onToggle={toggleTheme} last />
           </SettingsSection>
 
           {/* Account */}

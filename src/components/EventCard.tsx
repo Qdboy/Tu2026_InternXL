@@ -16,7 +16,7 @@ export default function EventCard({ event }: EventCardProps) {
       {/* Date badge */}
       <div className="flex-shrink-0 w-16 h-16 rounded-xl bg-dark-char flex flex-col items-center justify-center">
         <span className="text-xs font-bold text-primary tracking-wider">{month}</span>
-        <span className="text-2xl font-display font-bold text-card">{day}</span>
+        <span className="text-2xl font-display font-bold text-on-dark">{day}</span>
       </div>
 
       {/* Content */}

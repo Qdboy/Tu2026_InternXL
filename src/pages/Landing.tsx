@@ -1,7 +1,7 @@
 export default function Landing({ onGetStarted }: { onGetStarted: () => void }) {
   return (
-    <div className="flex flex-col h-full bg-dark-char relative overflow-hidden">
-      <div className="flex-1 flex flex-col items-center justify-center px-12 relative">
+    <div className="flex flex-col h-screen max-w-lg mx-auto bg-dark-char relative overflow-hidden">
+      <div className="flex-1 flex flex-col items-center justify-center px-8 relative">
         {/* Decorative radial glows */}
         <div className="absolute -top-30 -left-30 w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(232,86,10,0.18)_0%,transparent_65%)] pointer-events-none" />
         <div className="absolute -bottom-20 -right-20 w-[320px] h-[320px] bg-[radial-gradient(circle,rgba(107,191,42,0.1)_0%,transparent_65%)] pointer-events-none" />
@@ -26,10 +26,10 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
           </span>
         </div>
 
-        <h1 className="font-display text-[54px] font-black text-card text-center leading-none mb-2.5 relative z-10">
+        <h1 className="font-display text-[54px] font-black text-on-dark text-center leading-none mb-2.5 relative z-10">
           Politi<span className="text-orange-light">U</span>
         </h1>
-        <p className="text-[13px] text-card/40 text-center mb-14 tracking-[2.5px] uppercase relative z-10">
+        <p className="text-[13px] text-on-dark/40 text-center mb-14 tracking-[2.5px] uppercase relative z-10">
           Your Civic Companion
         </p>
 
@@ -38,7 +38,7 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
 
         <button
           onClick={onGetStarted}
-          className="w-full max-w-[360px] py-[18px] bg-gradient-to-br from-orange-light to-burnt text-card font-body text-[15px] font-extrabold border-none rounded-[14px] cursor-pointer tracking-[1.2px] uppercase mb-3.5 shadow-[0_8px_28px_rgba(232,86,10,0.4)] relative z-10 hover:translate-y-[-1px] hover:shadow-[0_12px_32px_rgba(232,86,10,0.5)] transition-all"
+          className="w-full max-w-[360px] py-[18px] bg-gradient-to-br from-orange-light to-burnt text-on-dark font-body text-[15px] font-extrabold border-none rounded-[14px] cursor-pointer tracking-[1.2px] uppercase mb-3.5 shadow-[0_8px_28px_rgba(232,86,10,0.4)] relative z-10 hover:translate-y-[-1px] hover:shadow-[0_12px_32px_rgba(232,86,10,0.5)] transition-all"
         >
           Get Started
         </button>
@@ -46,7 +46,7 @@ export default function Landing({ onGetStarted }: { onGetStarted: () => void }) 
           I Already Have An Account
         </button>
 
-        <p className="mt-10 text-[11px] text-card/20 text-center relative z-10">
+        <p className="mt-10 text-[11px] text-on-dark/20 text-center relative z-10">
           By continuing, you agree to our Terms & Privacy Policy
         </p>
       </div>

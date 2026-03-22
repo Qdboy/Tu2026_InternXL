@@ -57,8 +57,8 @@ export default function DocumentsPage() {
     <div className="flex flex-col h-full bg-background">
       {/* Header */}
       <div className="bg-dark-char px-5 py-4 flex-shrink-0">
-        <h1 className="font-display text-xl font-bold text-card">Documents</h1>
-        <p className="text-xs text-card/40 mt-0.5">AI-powered civic doc summarizer</p>
+        <h1 className="font-display text-xl font-bold text-on-dark">Documents</h1>
+        <p className="text-xs text-on-dark/40 mt-0.5">AI-powered civic doc summarizer</p>
       </div>
 
       {/* Content */}
@@ -76,13 +76,13 @@ export default function DocumentsPage() {
             </p>
             <div className="flex gap-2.5 justify-center flex-wrap">
               <button
-                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-dark-char text-card border-2 border-dark-char hover:bg-[#2a2f2a] transition-colors"
+                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-dark-char text-on-dark border-2 border-dark-char hover:bg-[#2a2f2a] transition-colors"
                 onClick={(e) => { e.stopPropagation(); toast("PDF upload ready"); }}
               >
                 📁 Upload PDF
               </button>
               <button
-                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-transparent text-dark-char border-2 border-dark-char hover:bg-dark-char hover:text-card transition-colors"
+                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-transparent text-dark-char border-2 border-dark-char hover:bg-dark-char hover:text-on-dark transition-colors"
                 onClick={(e) => { e.stopPropagation(); toast("Camera scan ready"); }}
               >
                 📷 Scan
@@ -105,7 +105,7 @@ export default function DocumentsPage() {
               onChange={(e) => setLinkUrl(e.target.value)}
             />
             <button
-              className="py-3 px-4.5 bg-primary text-card border-none rounded-xl font-body text-[13px] font-extrabold cursor-pointer hover:bg-burnt transition-colors whitespace-nowrap"
+              className="py-3 px-4.5 bg-primary text-on-dark border-none rounded-xl font-body text-[13px] font-extrabold cursor-pointer hover:bg-burnt transition-colors whitespace-nowrap"
               onClick={() => toast("Summarizing document…")}
             >
               Summarize

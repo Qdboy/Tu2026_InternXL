@@ -82,17 +82,17 @@ const FILTERS = ["All", "Federal", "State", "Local", "For You"];
 const LEVEL_STYLES = {
   federal: {
     bg: "bg-gradient-to-br from-dark-char to-[#354030]",
-    badge: "bg-primary/90 text-card",
+    badge: "bg-primary/90 text-on-dark",
     badgeLabel: "⬟ Federal",
   },
   state: {
     bg: "bg-gradient-to-br from-forest to-[#4a8020]",
-    badge: "bg-card/92 text-forest",
+    badge: "bg-on-dark/92 text-forest",
     badgeLabel: "◈ State",
   },
   local: {
     bg: "bg-gradient-to-br from-burnt to-primary",
-    badge: "bg-card/92 text-burnt",
+    badge: "bg-on-dark/92 text-burnt",
     badgeLabel: "◉ Local",
   },
 };
@@ -108,16 +108,16 @@ export default function NewsPage() {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Filter bar */}
-      <div className="bg-dark-char px-4 pt-3 flex-shrink-0">
-        <div className="flex gap-0.5 overflow-x-auto scrollbar-none">
+      <div className="bg-dark-char pt-3 flex-shrink-0">
+        <div className="flex gap-0.5 justify-center overflow-x-auto scrollbar-none">
           {FILTERS.map((f) => (
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
-              className={`py-2.5 px-[18px] rounded-t-[18px] text-[11px] font-extrabold whitespace-nowrap cursor-pointer tracking-[0.4px] bg-transparent border-none font-body transition-all ${
+              className={`py-2.5 px-[18px] rounded-t-[18px] text-[11px] font-extrabold whitespace-nowrap cursor-pointer tracking-[0.4px] bg-transparent border-none font-body transition-all min-h-[44px] ${
                 activeFilter === f
                   ? "bg-background text-dark-char"
-                  : "text-card/40"
+                  : "text-on-dark/40"
               }`}
             >
               {f}
@@ -128,7 +128,7 @@ export default function NewsPage() {
 
       {/* Feed */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-4 space-y-3.5">
+        <div className="p-5 space-y-3.5">
           {filtered.map((article) => {
             const style = LEVEL_STYLES[article.level];
             return (

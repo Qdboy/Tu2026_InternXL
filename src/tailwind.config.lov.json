@@ -333,6 +333,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -781,6 +782,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -1180,6 +1182,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -1607,6 +1610,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -1958,6 +1962,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -2296,6 +2301,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -2712,6 +2718,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -3103,6 +3110,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -3685,6 +3693,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -4694,6 +4703,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -5083,6 +5093,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -5445,6 +5456,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -5783,6 +5795,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -6358,6 +6371,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -6703,6 +6717,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",
@@ -7041,6 +7056,7 @@
         "border": "hsl(var(--sidebar-border))",
         "ring": "hsl(var(--sidebar-ring))"
       },
+      "on-dark": "hsl(var(--on-dark))",
       "forest": "hsl(var(--forest))",
       "olive": "hsl(var(--olive))",
       "charcoal": "hsl(var(--charcoal))",

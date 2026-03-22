@@ -9,15 +9,15 @@ export default function AppBar() {
             P<span className="text-primary">U</span>
           </span>
         </div>
-        <span className="font-display text-[22px] font-black text-card">
+        <span className="font-display text-[22px] font-black text-on-dark">
           Politi<span className="text-orange-light">U</span>
         </span>
       </div>
       <div className="flex gap-3.5 items-center">
-        <button className="bg-transparent border-none cursor-pointer p-1 text-card/55 hover:text-orange-light transition-colors">
+        <button className="bg-transparent border-none cursor-pointer p-1 text-on-dark/55 hover:text-orange-light transition-colors">
           <Search className="w-5 h-5" />
         </button>
-        <button className="bg-transparent border-none cursor-pointer p-1 text-card/55 hover:text-orange-light transition-colors">
+        <button className="bg-transparent border-none cursor-pointer p-1 text-on-dark/55 hover:text-orange-light transition-colors">
           <Bell className="w-5 h-5" />
         </button>
       </div>

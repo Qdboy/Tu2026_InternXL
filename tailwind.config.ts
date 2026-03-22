@@ -61,6 +61,7 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "on-dark": "hsl(var(--on-dark))",
         // PolitiU brand
         orange: {
           DEFAULT: "hsl(var(--orange))",
