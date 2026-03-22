@@ -51,27 +51,42 @@ export default function Onboarding({ onComplete, onBack }: OnboardingProps) {
     const city = parts[1] || "Atlanta";
     const state = parts[2]?.split(" ")[0] || "GA";
 
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        saveResidential({
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
+    const saveAndComplete = (lat: number, lng: number) => {
+      saveResidential({
+        lat,
+        lng,
+        address: parts[0] || address,
+        city,
+        state,
+      });
+      // Save enriched profile for AI features
+      const existingRaw = localStorage.getItem("politiu_user_location");
+      const existing = existingRaw ? JSON.parse(existingRaw) : {};
+      localStorage.setItem("politiu_user_location", JSON.stringify({
+        ...existing,
+        residential: {
+          ...(existing.residential || {}),
+          lat,
+          lng,
           address: parts[0] || address,
           city,
           state,
-        });
-        onComplete();
-      },
-      () => {
-        saveResidential({
-          lat: 33.749,
-          lng: -84.388,
-          address: parts[0] || "123 Main St",
-          city,
-          state,
-        });
-        onComplete();
-      }
+        },
+        profile: {
+          name: `${firstName} ${lastName}`.trim(),
+          occupation,
+          zipCode: parts[2]?.split(" ")[1] || "",
+          county: city,
+          interests: selectedInterests.map((i) => i.replace(/^[^\s]+\s/, "")),
+          transport: [],
+        },
+      }));
+      onComplete();
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => saveAndComplete(pos.coords.latitude, pos.coords.longitude),
+      () => saveAndComplete(33.749, -84.388)
     );
   };
 

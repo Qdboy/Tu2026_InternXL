@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [
-  { path: "/news", icon: "📰", label: "News" },
+  { path: "/feed", icon: "📰", label: "Feed" },
   { path: "/events", icon: "📍", label: "Events" },
   { path: "/candidates", icon: "🏛️", label: "Candidates" },
   { path: "/documents", icon: "📄", label: "Documents" },
@@ -15,7 +15,7 @@ export default function BottomNav() {
   return (
     <nav className="bg-dark-char flex items-center justify-around border-t-2 border-accent/22 flex-shrink-0 pt-2 pb-[max(0.25rem,env(safe-area-inset-bottom))]">
       {NAV_ITEMS.map((item) => {
-        const isActive = location.pathname === item.path || (item.path === "/news" && location.pathname === "/");
+        const isActive = location.pathname === item.path || (item.path === "/feed" && location.pathname === "/");
         return (
           <button
             key={item.path}
