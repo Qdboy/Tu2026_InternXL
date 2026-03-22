@@ -25,6 +25,8 @@ interface UserProfile {
   name: string;
   occupation: string;
   zipCode: string;
+  city?: string;
+  state?: string;
   interests: string[];
   transport: string[];
 }
@@ -38,21 +40,21 @@ const filters: { label: string; value: Level | "all" }[] = [
 
 const tagColors: Record<string, string> = {
   Economy: "bg-orange-pale text-burnt",
-  Healthcare: "bg-mint text-muted-foreground",
-  Education: "bg-[hsl(120,40%,92%)] text-forest",
-  Environment: "bg-[hsl(110,40%,93%)] text-olive",
+  Healthcare: "bg-mint text-forest",
+  Education: "bg-mint text-forest",
+  Environment: "bg-mint text-olive",
   Housing: "bg-orange-pale text-primary",
-  Transportation: "bg-mint text-muted-foreground",
-  Immigration: "bg-[hsl(120,40%,92%)] text-forest",
+  Transportation: "bg-mint text-forest",
+  Immigration: "bg-mint text-forest",
   "Criminal Justice": "bg-orange-pale text-burnt",
-  Technology: "bg-mint text-muted-foreground",
-  "Civil Rights": "bg-[hsl(110,40%,93%)] text-olive",
-  Climate: "bg-[hsl(110,40%,93%)] text-olive",
+  Technology: "bg-mint text-forest",
+  "Civil Rights": "bg-mint text-olive",
+  Climate: "bg-mint text-olive",
 };
 
 const levelGradient: Record<Level, string> = {
-  federal: "bg-gradient-to-br from-dark-surface to-[hsl(130,10%,22%)]",
-  state: "bg-gradient-to-br from-forest to-[hsl(100,60%,30%)]",
+  federal: "bg-gradient-to-br from-dark-surface to-charcoal",
+  state: "bg-gradient-to-br from-forest to-olive",
   local: "bg-gradient-to-br from-burnt to-primary",
 };
 
@@ -73,12 +75,20 @@ const Feed = () => {
       try {
         const parsed = JSON.parse(stored);
         if (parsed.profile) {
-          setProfile(parsed.profile);
+          const p = { ...parsed.profile };
+          if (parsed.residential) {
+            p.zipCode = p.zipCode || parsed.residential.address || "";
+            p.city = parsed.residential.city || "";
+            p.state = parsed.residential.state || "";
+          }
+          setProfile(p);
         } else if (parsed.residential) {
           setProfile({
             name: "",
             occupation: "",
             zipCode: parsed.residential.address || "",
+            city: parsed.residential.city || "",
+            state: parsed.residential.state || "",
             interests: [],
             transport: [],
           });
@@ -224,7 +234,48 @@ const Feed = () => {
         </div>
       ) : (
         <div className="px-3.5 pt-3.5 space-y-3 pb-6">
-          {filtered.map((item, i) => (
+          {/* Featured Blog Post */}
+          <Card className="rounded-2xl overflow-hidden shadow-md border-primary/15">
+            <div className="h-40 relative overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=600&q=80"
+                alt="Featured civic engagement blog"
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-char/90 via-dark-char/40 to-transparent" />
+              <div className="absolute top-3 left-3">
+                <span className="py-1 px-2.5 rounded-full text-[9px] font-extrabold bg-primary text-primary-foreground uppercase tracking-wider">Featured</span>
+              </div>
+              <div className="absolute bottom-3 left-3 right-3">
+                <h3 className="font-display text-[15px] font-bold text-on-dark leading-tight">Why Your Local Election Matters More Than You Think</h3>
+                <p className="text-[10px] text-on-dark/60 mt-1">5 min read · Civic Engagement Weekly</p>
+              </div>
+            </div>
+            <div className="p-3.5">
+              <p className="text-[11px] text-muted-foreground leading-relaxed mb-2.5">
+                From zoning decisions that shape your neighborhood to school board votes that affect your children's education, local elections have the most direct impact on your daily life — yet they see the lowest turnout.
+              </p>
+              <div className="flex flex-wrap gap-1.5 mb-2.5">
+                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-orange-pale text-burnt">Civic Engagement</span>
+                <span className="px-2 py-0.5 rounded-lg text-[10px] font-bold bg-mint text-forest">Local Government</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <a
+                  href="https://www.google.com/search?q=why+local+elections+matter"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Read full article
+                </a>
+                <button className="flex items-center gap-1.5 text-[11px] font-semibold text-sage">
+                  <Bookmark className="w-3.5 h-3.5" /> Save
+                </button>
+              </div>
+            </div>
+          </Card>
+
+           {filtered.map((item, i) => (
             <motion.div key={item.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
               <Card className="rounded-2xl overflow-hidden shadow-sm border-border">
                 <div className={`h-32 relative overflow-hidden flex items-end p-3 ${levelGradient[item.level as Level]}`}>

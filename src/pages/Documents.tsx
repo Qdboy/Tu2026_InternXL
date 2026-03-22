@@ -66,7 +66,7 @@ export default function DocumentsPage() {
         <div className="p-5">
           {/* Upload zone */}
           <div
-            className="border-2 border-dashed border-primary rounded-[20px] p-8 text-center bg-orange-pale mb-5 cursor-pointer hover:bg-[#fae6d8] transition-colors"
+            className="border-2 border-dashed border-primary rounded-[20px] p-8 text-center bg-orange-pale mb-5 cursor-pointer hover:bg-orange-pale/80 transition-colors"
             onClick={() => toast("File picker opening…")}
           >
             <div className="text-[42px] mb-3">📋</div>
@@ -76,7 +76,7 @@ export default function DocumentsPage() {
             </p>
             <div className="flex gap-2.5 justify-center flex-wrap">
               <button
-                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-dark-char text-on-dark border-2 border-dark-char hover:bg-[#2a2f2a] transition-colors"
+                className="py-2.5 px-5 rounded-[10px] text-xs font-extrabold cursor-pointer font-body bg-dark-char text-on-dark border-2 border-dark-char hover:bg-charcoal transition-colors"
                 onClick={(e) => { e.stopPropagation(); toast("PDF upload ready"); }}
               >
                 📁 Upload PDF

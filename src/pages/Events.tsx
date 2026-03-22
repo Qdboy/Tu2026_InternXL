@@ -1,8 +1,20 @@
 import { useState, useMemo, useCallback } from "react";
+import { Calendar, MapPin, Star, Clock } from "lucide-react";
 import EventCard from "@/components/EventCard";
 import EventsMap from "@/components/EventsMap";
 import { useUserLocation } from "@/hooks/use-user-location";
 import { getMockEvents, getMockPrecincts } from "@/data/mock-events";
+
+const FEATURED_EVENT = {
+  title: "Youth Voter Registration Drive & Town Hall",
+  description: "Join local civic leaders for a free voter registration drive, followed by a town hall Q&A with candidates running for City Council. Food trucks, live music, and free merch for first-time voters!",
+  date: "Saturday, April 5, 2025",
+  time: "11:00 AM – 3:00 PM",
+  location: "Piedmont Park – Midtown, Atlanta",
+  tags: ["🗳️ Voter Registration", "🎤 Town Hall", "🎶 Live Music"],
+  attendees: 243,
+  image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=600&q=80",
+};
 
 export default function EventsPage() {
   const { location } = useUserLocation();
@@ -27,7 +39,6 @@ export default function EventsPage() {
     ? `${location.residential.city || "Near you"}${location.residential.state ? `, ${location.residential.state}` : ""}`
     : "Your area";
 
-  // Group events by time period
   const now = new Date();
   const thisWeekEnd = new Date(now);
   thisWeekEnd.setDate(now.getDate() + 7);
@@ -48,7 +59,6 @@ export default function EventsPage() {
             </p>
           </div>
 
-          {/* View toggle */}
           <div className="flex bg-on-dark/10 rounded-[10px] overflow-hidden border border-on-dark/10">
             <button
               onClick={() => setView("list")}
@@ -68,7 +78,6 @@ export default function EventsPage() {
             </button>
           </div>
         </div>
-
       </div>
 
       {/* Map view */}
@@ -86,6 +95,50 @@ export default function EventsPage() {
 
       {/* Event list */}
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5 pb-24">
+        {/* Featured Event */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-1.5">
+            <Star className="w-3.5 h-3.5 text-primary fill-primary" />
+            <h2 className="text-xs font-bold text-primary tracking-widest uppercase">Featured Event</h2>
+          </div>
+          <div className="rounded-2xl overflow-hidden border border-primary/20 shadow-[0_4px_20px_rgba(232,86,10,0.12)]">
+            <div className="h-36 relative overflow-hidden">
+              <img
+                src={FEATURED_EVENT.image}
+                alt={FEATURED_EVENT.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-dark-char/80 to-transparent" />
+              <div className="absolute bottom-3 left-3 right-3">
+                <h3 className="font-display text-[15px] font-bold text-on-dark leading-tight">{FEATURED_EVENT.title}</h3>
+              </div>
+            </div>
+            <div className="bg-card p-3.5 space-y-2.5">
+              <p className="text-[11px] text-muted-foreground leading-relaxed">{FEATURED_EVENT.description}</p>
+              <div className="flex items-center gap-3 text-[10px] font-bold text-foreground">
+                <span className="flex items-center gap-1"><Calendar className="w-3 h-3 text-primary" />{FEATURED_EVENT.date}</span>
+              </div>
+              <div className="flex items-center gap-3 text-[10px] font-bold text-foreground">
+                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-primary" />{FEATURED_EVENT.time}</span>
+                <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-primary" />{FEATURED_EVENT.location}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {FEATURED_EVENT.tags.map((tag) => (
+                  <span key={tag} className="py-[3px] px-2.5 rounded-full text-[10px] font-bold bg-orange-pale text-primary">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-[10px] text-muted-foreground font-semibold">{FEATURED_EVENT.attendees} attending</span>
+                <button className="py-1.5 px-4 rounded-full bg-gradient-to-br from-orange-light to-burnt text-on-dark text-[10px] font-extrabold border-none cursor-pointer uppercase tracking-wider">
+                  RSVP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {thisWeek.length > 0 && (
           <div className="space-y-3">
             <h2 className="text-xs font-bold text-muted-foreground tracking-widest uppercase">This Week</h2>

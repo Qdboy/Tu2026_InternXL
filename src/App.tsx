@@ -40,7 +40,7 @@ function AppContent() {
   };
 
   if (screen === "landing") {
-    return <Landing onGetStarted={() => setScreen("onboarding")} />;
+    return <Landing onGetStarted={() => setScreen("onboarding")} onRestore={() => setScreen("app")} />;
   }
 
   if (screen === "onboarding") {

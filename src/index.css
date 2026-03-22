@@ -47,6 +47,7 @@
     --olive: 84 40% 41%;
     --charcoal: 120 4% 27%;
     --dark-char: 110 4% 26%;
+    --dark-surface: 120 6% 18%;
     --sage: 145 16% 58%;
     --sage-light: 140 28% 76%;
     --mint: 130 40% 91%;
@@ -88,11 +89,15 @@
 
     --on-dark: 0 0% 96%;
     --dark-char: 120 6% 11%;
+    --dark-surface: 120 6% 14%;
     --orange-pale: 22 30% 16%;
     --mint: 130 15% 18%;
     --sage-light: 140 10% 22%;
     --forest: 104 50% 30%;
     --olive: 84 30% 38%;
+    --burnt: 24 90% 45%;
+    --tan: 27 45% 55%;
+    --slate: 145 10% 50%;
 
     --sidebar-background: 120 8% 6%;
     --sidebar-foreground: 130 15% 88%;

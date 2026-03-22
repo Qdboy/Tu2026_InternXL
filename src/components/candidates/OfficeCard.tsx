@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import CandidateAvatar from "@/components/CandidateAvatar";
 import LevelTag from "@/components/LevelTag";
-import { Recommendation, partyStyles } from "./types";
+import { Recommendation, getPartyStyle } from "./types";
 
 interface Props {
   office: Recommendation;
@@ -31,7 +31,7 @@ const OfficeCard = ({ office, index, onSelect }: Props) => {
         {/* Side-by-side candidate previews */}
         <div className="grid grid-cols-2 gap-2">
           {office.candidates.slice(0, 4).map((c, i) => {
-            const styles = partyStyles[c.party] || partyStyles.Independent;
+            const styles = getPartyStyle(c.party);
             return (
               <div
                 key={i}
