@@ -14,117 +14,71 @@ serve(async (req) => {
   try {
     const { profile } = await req.json();
 
-    const OPENROUTER_API_KEY = Deno.env.get("OPENROUTER_API_KEY");
-    if (!OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const currentDate = new Date().toISOString().split("T")[0];
-    const systemPrompt = `You are a civic education advisor for PolitiU, a voter education app for young adults (18-25). Today's date is ${currentDate}.
+    const currentYear = parseInt(currentDate.slice(0, 4));
+
+    const systemPrompt = `You are a civic education advisor for Politi-U, a voter education app for young adults (18-25). Today's date is ${currentDate}.
 
 CRITICAL RULES:
-- Only recommend candidates for UPCOMING or CURRENT elections (2025 and beyond). Do NOT recommend candidates from past elections (e.g. 2024 presidential race is OVER).
+- Only recommend candidates for UPCOMING or CURRENT elections (${currentYear} and beyond). Do NOT recommend candidates from past elections.
 - Show candidates who are CURRENTLY in office or ACTIVELY running for office in upcoming races.
-- Each candidate name must be a single person's full name (e.g. "Donald Trump", NOT "Donald Trump / JD Vance"). Never combine running mates.
+- Each candidate name must be a single person's full name (e.g. "Jane Smith", NOT "Jane Smith / John Doe"). Never combine running mates.
 - Do not append labels like "(Incumbent)" or "(Legacy)" to names — use the position field for that.
 - Focus on the OFFICE first (the role matters more than the person)
 - Be non-partisan and educational
 - Use actual, verifiable candidate names, parties, and policy positions
 - Only include candidates relevant to the user's location (zip code / state)
+- Each office MUST have at least 2 candidates from different parties for balanced representation
 
-Never invent fictional candidates. Never recommend races that have already concluded.`;
+Never invent fictional candidates. Never recommend races that have already concluded.
 
-    const userPrompt = `Generate candidate/office recommendations for UPCOMING elections (2025 and beyond) for this user:
+Return a JSON object with a "recommendations" array. Each recommendation has: office (string), level ("local"|"state"|"federal"), why_it_matters (string), and candidates (array of objects with: name, party, position, policies (array of 3-5 strings), relevance_score (0-100), relevance_reason).`;
+
+    const userPrompt = `Generate candidate/office recommendations for UPCOMING elections (${currentYear} and beyond) for this user:
 - Name: ${profile.name || "Young Voter"}
 - Occupation: ${profile.occupation || "Student"}
-- County: ${profile.county || "Fulton County"}
-- Location (zip): ${profile.zipCode || "30309"}
+- County: ${profile.county || "Unknown County"}
+- Location (zip): ${profile.zipCode || "00000"}
 - Interests: ${(profile.interests || []).join(", ") || "General"}
 - Transportation: ${(profile.transport || []).join(", ") || "Car"}
 
-Focus on races happening in 2025-2026. Do NOT include the 2024 presidential election or any completed races.`;
+Focus on races happening in ${currentYear}-${currentYear + 1}. Include at least 2 candidates per office. Return ONLY the JSON object.`;
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    const response = await fetch("https://api.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://politiu.app",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "recommend_candidates",
-              description: "Return personalized candidate and office recommendations",
-              parameters: {
-                type: "object",
-                properties: {
-                  recommendations: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        office: { type: "string", description: "The office title, e.g. U.S. Senate · Georgia" },
-                        level: { type: "string", enum: ["local", "state", "federal"] },
-                        why_it_matters: { type: "string", description: "1-2 sentences on why this office matters to the user based on their interests" },
-                        candidates: {
-                          type: "array",
-                          items: {
-                            type: "object",
-                            properties: {
-                              name: { type: "string" },
-                              party: { type: "string", enum: ["Democrat", "Republican", "Independent"] },
-                              position: { type: "string", description: "Their running position label" },
-                              policies: { type: "array", items: { type: "string" }, description: "3-5 key policies" },
-                              relevance_score: { type: "number", description: "0-100 how aligned with user interests" },
-                              relevance_reason: { type: "string", description: "Brief reason for score based on user interests" },
-                            },
-                            required: ["name", "party", "position", "policies", "relevance_score", "relevance_reason"],
-                            additionalProperties: false,
-                          },
-                        },
-                      },
-                      required: ["office", "level", "why_it_matters", "candidates"],
-                      additionalProperties: false,
-                    },
-                  },
-                },
-                required: ["recommendations"],
-                additionalProperties: false,
-              },
-            },
-          },
-        ],
-        tool_choice: { type: "function", function: { name: "recommend_candidates" } },
+        response_format: { type: "json_object" },
       }),
     });
 
     if (!response.ok) {
+      const text = await response.text();
+      console.error("Lovable AI error:", response.status, text);
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limited, please try again later." }), {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      if (response.status === 402) {
-        return new Response(JSON.stringify({ error: "AI credits exhausted. Please add funds." }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-      const text = await response.text();
-      console.error("AI gateway error:", response.status, text);
-      throw new Error("AI gateway error");
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();
-    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall) throw new Error("No tool call in response");
+    const content = data.choices?.[0]?.message?.content;
+    if (!content) throw new Error("No content in AI response");
 
-    const parsed = JSON.parse(toolCall.function.arguments);
+    const parsed = JSON.parse(content);
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
