@@ -10,6 +10,18 @@ export interface PolitiUEvent {
   description?: string;
 }
 
+export interface UserProfile {
+  name: string;
+  occupation: string;
+  zipCode: string;
+  county?: string;
+  city?: string;
+  state?: string;
+  interests: string[];
+  transport: string[];
+  income?: string;
+}
+
 export interface UserLocation {
   residential: {
     lat: number;
@@ -22,6 +34,7 @@ export interface UserLocation {
     lat: number;
     lng: number;
   } | null;
+  profile?: UserProfile;
 }
 
 export type LocationMode = "residential" | "current";

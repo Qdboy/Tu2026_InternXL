@@ -84,6 +84,7 @@ export default function EventsPage() {
       {view === "map" && (
         <div className="h-64 sm:h-72 flex-shrink-0">
           <EventsMap
+            key={`${activeCoords.lng}-${activeCoords.lat}`}
             center={[activeCoords.lng, activeCoords.lat]}
             events={events}
             precincts={precincts}

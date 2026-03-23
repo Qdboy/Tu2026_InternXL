@@ -53,7 +53,7 @@ function AppContent() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-lg mx-auto bg-background relative">
+    <div className="flex flex-col h-dvh w-full bg-background relative">
       <AppBar />
       <div className="flex-1 overflow-hidden">
         <Routes>

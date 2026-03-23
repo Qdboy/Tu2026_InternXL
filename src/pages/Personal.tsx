@@ -3,6 +3,8 @@ import { toast } from "sonner";
 import { useUserLocation } from "@/hooks/use-user-location";
 import { useTheme } from "@/hooks/use-theme";
 import { format } from "date-fns";
+import { Input } from "@/components/ui/input";
+import { MapPin, Loader2 } from "lucide-react";
 
 const TIGERWEB_CD_URL =
   "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0/query";
@@ -30,12 +32,14 @@ async function fetchDistrict(lng: number, lat: number) {
 }
 
 export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
-  const { location } = useUserLocation();
+  const { location, updateLocation } = useUserLocation();
   const { theme, toggleTheme } = useTheme();
   const [notificationsOn, setNotificationsOn] = useState(true);
   const [districtName, setDistrictName] = useState<string | null>(null);
+  const [editingAddress, setEditingAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState("");
+  const [updatingLocation, setUpdatingLocation] = useState(false);
 
-  // Read profile from localStorage
   const stored = localStorage.getItem("politiu_user_location");
   const parsed = stored ? (() => { try { return JSON.parse(stored); } catch { return null; } })() : null;
   const profile = parsed?.profile;
@@ -50,16 +54,31 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
   const city = location.residential?.city || "Atlanta";
   const state = location.residential?.state || "GA";
 
-  // Fetch district from Census API based on residential coords
   useEffect(() => {
     if (location.residential) {
       fetchDistrict(location.residential.lng, location.residential.lat).then((name) => {
         if (name) setDistrictName(name);
       });
     }
-  }, [location.residential]);
+  }, [location.residential?.lat, location.residential?.lng]);
 
   const districtShort = districtName || `${state}-05`;
+
+  const handleAddressUpdate = async () => {
+    if (!newAddress.trim()) return;
+    setUpdatingLocation(true);
+    try {
+      await updateLocation(newAddress);
+      setEditingAddress(false);
+      setNewAddress("");
+      setDistrictName(null); // will re-fetch
+      toast.success("Location updated! Your feed and events will refresh.");
+    } catch {
+      toast.error("Couldn't update location. Please try again.");
+    } finally {
+      setUpdatingLocation(false);
+    }
+  };
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -109,23 +128,62 @@ export default function PersonalPage({ onSignOut }: { onSignOut: () => void }) {
         </div>
       </div>
 
+      {/* Edit address section */}
+      {editingAddress && (
+        <div className="mx-5 mt-3 p-4 bg-card rounded-2xl border border-border shadow-sm space-y-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary" />
+            <span className="text-sm font-bold text-foreground">Update Your Address</span>
+          </div>
+          <Input
+            placeholder="e.g. 123 Main St, Chicago, IL 60601"
+            value={newAddress}
+            onChange={(e) => setNewAddress(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleAddressUpdate()}
+            className="text-sm"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleAddressUpdate}
+              disabled={updatingLocation || !newAddress.trim()}
+              className="flex-1 py-2 rounded-xl bg-gradient-to-br from-orange-light to-burnt text-on-dark text-xs font-extrabold border-none cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+            >
+              {updatingLocation ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Updating...</> : "Update Location"}
+            </button>
+            <button
+              onClick={() => { setEditingAddress(false); setNewAddress(""); }}
+              className="py-2 px-4 rounded-xl bg-secondary text-secondary-foreground text-xs font-bold border-none cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Settings */}
       <div className="flex-1 overflow-y-auto">
         <div className="p-5 space-y-4">
-          {/* My Information */}
           <SettingsSection title="My Information">
             <SettingsRow icon="👤" iconBg="bg-orange-pale" label="Personal Details" sub={`${displayName} · ${profile?.occupation || "N/A"}`} />
-            <SettingsRow icon="📍" iconBg="bg-mint" label="Address & District" sub={`${districtShort} · ${city}, ${state}`} last />
+            <div
+              className="flex items-center py-3.5 px-4 gap-3 cursor-pointer transition-colors hover:bg-background"
+              onClick={() => setEditingAddress(true)}
+            >
+              <div className="w-[34px] h-[34px] rounded-[9px] bg-mint flex items-center justify-center text-base flex-shrink-0">📍</div>
+              <div className="flex-1">
+                <div className="text-sm font-bold text-foreground">Address & District</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5">{districtShort} · {city}, {state}</div>
+              </div>
+              <span className="text-primary text-[10px] font-bold">Edit</span>
+            </div>
           </SettingsSection>
 
-          {/* Interests & Preferences */}
           <SettingsSection title="Interests & Preferences">
             <SettingsRow icon="⭐" iconBg="bg-orange-pale" label="Areas of Interest" sub={profile?.interests?.join(", ") || "Not set"} />
             <ToggleRow icon="🔔" iconBg="bg-mint" label="Notifications" sub="Breaking civic news alerts" value={notificationsOn} onToggle={() => setNotificationsOn(!notificationsOn)} />
             <ToggleRow icon="🌙" iconBg="bg-orange-pale" label="Dark Mode" sub={`Currently: ${theme === "dark" ? "Dark" : "Light"}`} value={theme === "dark"} onToggle={toggleTheme} last />
           </SettingsSection>
 
-          {/* Account */}
           <SettingsSection title="Account">
             <SettingsRow icon="🔐" iconBg="bg-sage-light" label="Security & Privacy" sub="Password, data preferences" />
             <SettingsRow icon="❓" iconBg="bg-mint" label="Help & Support" />

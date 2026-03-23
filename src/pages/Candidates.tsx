@@ -2,47 +2,20 @@ import { useState, useEffect } from "react";
 import { Search, Loader2, Sparkles, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useUserLocation } from "@/hooks/use-user-location";
 import OfficeCard from "@/components/candidates/OfficeCard";
 import OfficeDetailDialog from "@/components/candidates/OfficeDetailDialog";
 import CandidateDetailDialog from "@/components/candidates/CandidateDetailDialog";
-import { Recommendation, Candidate, UserProfile } from "@/components/candidates/types";
+import { Recommendation, Candidate } from "@/components/candidates/types";
 
 const Candidates = () => {
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const { profile } = useUserLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOffice, setSelectedOffice] = useState<Recommendation | null>(null);
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const stored = localStorage.getItem("politiu_user_location");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (parsed.profile) {
-          const p = { ...parsed.profile };
-          if (parsed.residential) {
-            p.zipCode = p.zipCode || parsed.residential.address || "";
-            p.city = parsed.residential.city || "";
-            p.state = parsed.residential.state || "";
-          }
-          setProfile(p);
-        } else if (parsed.residential) {
-          setProfile({
-            name: "",
-            occupation: "",
-            zipCode: parsed.residential.address || "",
-            city: parsed.residential.city || "",
-            state: parsed.residential.state || "",
-            interests: [],
-            transport: [],
-          });
-        }
-      } catch { /* ignore */ }
-    }
-  }, []);
 
   const fetchRecommendations = async () => {
     if (!profile || loading) return;

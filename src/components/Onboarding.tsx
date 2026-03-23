@@ -201,6 +201,7 @@ export default function Onboarding({ onComplete, onBack }: OnboardingProps) {
           },
         })
       );
+      window.dispatchEvent(new Event("politiu_location_update"));
       onComplete();
     };
 

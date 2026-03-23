@@ -75,10 +75,29 @@ Focus on races happening in ${currentYear}-${currentYear + 1}. Include at least 
     }
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
+    let content: string = data.choices?.[0]?.message?.content ?? "";
     if (!content) throw new Error("No content in AI response");
 
-    const parsed = JSON.parse(content);
+    // Strip markdown code fences if present
+    content = content.replace(/^```(?:json)?\s*\n?/i, "").replace(/\n?```\s*$/i, "").trim();
+
+    // Fix common JSON issues from LLMs: trailing commas before } or ]
+    content = content.replace(/,\s*([\]}])/g, "$1");
+
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(content);
+    } catch (parseErr) {
+      console.error("JSON parse failed, raw content (first 500 chars):", content.slice(0, 500));
+      // Try extracting the first valid JSON object
+      const match = content.match(/\{[\s\S]*\}/);
+      if (match) {
+        const cleaned = match[0].replace(/,\s*([\]}])/g, "$1");
+        parsed = JSON.parse(cleaned);
+      } else {
+        throw parseErr;
+      }
+    }
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
